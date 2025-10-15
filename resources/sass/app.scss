@@ -1,0 +1,9 @@
+// Option 2: Keep fonts at top but use @import for SCSS files
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import 'variables';
+@import 'bootstrap/scss/bootstrap';
+@import 'home';
+@import 'dashboard';
+@import 'login';
+@import 'users';
+@import 'students';
