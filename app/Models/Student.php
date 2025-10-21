@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Student extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     /**
      * The table associated with the model.
-     * (Optional if table name = 'students')
      */
     protected $table = 'students';
 
@@ -19,53 +19,43 @@ class Student extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'student_id',       // Unique student identifier
-        'full_name',        // Student's full name
-        'email',            // Email address (unique)
-        'phone',            // Phone number (nullable)
-        'department',       // Department name
-        'year_level',       // 1, 2, 3, or 4
-        'status',           // 'active' or 'inactive'
-        'enrollment_date',  // Date of enrollment
-        'date_of_birth',    // Birthdate (nullable)
-        'address',          // Address (nullable)
-        'guardian_name',    // Guardian's name (nullable)
-        'guardian_phone',   // Guardian's phone (nullable)
+        'student_id',
+        'full_name',
+        'email',
+        'phone',
+        'department',
+        'year_level',
+        'status',
+        'enrollment_date',
+        'date_of_birth',
+        'address',
+        'guardian_name',
+        'guardian_phone',
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast to native types.
      */
     protected $casts = [
         'enrollment_date' => 'date',
         'date_of_birth' => 'date',
+        'year_level' => 'integer',
     ];
 
     /**
-     * Example relationships (optional)
-     * Uncomment or adjust these if you link to other models later.
+     * Scope to filter active students.
      */
-
-    // Each student can belong to a user account (optional)
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
-
-    // Each student can be enrolled in multiple courses (optional)
-    // public function courses()
-    // {
-    //     return $this->belongsToMany(Course::class, 'course_enrollments')
-    //         ->withPivot('grade', 'status')
-    //         ->withTimestamps();
-    // }
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
 
     /**
-     * Accessors or custom methods can be added below if needed
-     * Example:
-     * public function getFullDetailsAttribute()
-     * {
-     *     return "{$this->full_name} ({$this->student_id})";
-     * }
+     * Custom accessor for formatted status.
      */
+    public function getFormattedStatusAttribute()
+    {
+        return ucfirst($this->status);
+    }
 }
+

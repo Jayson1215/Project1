@@ -17,12 +17,6 @@
             <div id="example"></div>
         </div>
 
-        <!-- ✅ Vite (Laravel 9/10/11) -->
-        @viteReactRefresh
-        @vite('resources/js/example.js')
 
-        <!-- ❌ If you’re on Laravel Mix (older Laravel < 9), use this instead:
-        <script src="{{ mix('js/app.js') }}"></script>
-        -->
     </body>
 </html>

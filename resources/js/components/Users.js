@@ -22,12 +22,20 @@ import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 
 // Material-UI Icons
 import SearchIcon from "@mui/icons-material/Search";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -40,7 +48,6 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import BusinessIcon from "@mui/icons-material/Business";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HelpIcon from "@mui/icons-material/Help";
@@ -218,13 +225,6 @@ function UsersContent() {
     } catch (error) {
       console.error("Error deleting user:", error);
       setError(error.response?.data?.message || "Failed to delete user. Please try again.");
-    }
-  };
-
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      setShowModal(false);
-      setShowEditModal(false);
     }
   };
 
@@ -435,181 +435,143 @@ function UsersContent() {
         </div>
       </div>
 
-      {showModal && (
-        <div className="modal-overlay" onClick={handleOverlayClick}>
-          <div className="modal-dialog">
-            <div className="modal-header">
-              <h3>Add New User</h3>
-              <button className="modal-close" onClick={() => setShowModal(false)}>
-                <CloseIcon />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="form-group">
-                <label>Full Name <span className="required">*</span></label>
-                <input
-                  type="text"
-                  name="name"
-                  value={newUser.name}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter full name"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Email Address <span className="required">*</span></label>
-                <input
-                  type="email"
-                  name="email"
-                  value={newUser.email}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter email address"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Role <span className="required">*</span></label>
-                <select
-                  name="role"
-                  value={newUser.role}
-                  onChange={handleChange}
-                  className="form-input"
-                  required
-                >
-                  <option value="">Select role</option>
-                  <option value="admin">Admin</option>
-                  <option value="faculty">Faculty</option>
-                  <option value="student">Student</option>
-                  <option value="staff">Staff</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Password <span className="required">*</span></label>
-                <input
-                  type="password"
-                  name="password"
-                  value={newUser.password}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter password (min. 8 characters)"
-                  required
-                  minLength={8}
-                />
-              </div>
-              <div className="form-group">
-                <label>Status <span className="required">*</span></label>
-                <select
-                  name="status"
-                  value={newUser.status}
-                  onChange={handleChange}
-                  className="form-input"
-                  required
-                >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="btn-cancel" onClick={() => setShowModal(false)}>
-                Cancel
-              </button>
-              <button className="btn-submit" onClick={handleAddUser}>
-                Add User
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Add User Modal - Material-UI Dialog */}
+      <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Add New User</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
+            <TextField
+              label="Full Name"
+              name="name"
+              value={newUser.name}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Email Address"
+              name="email"
+              type="email"
+              value={newUser.email}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+            <FormControl fullWidth required>
+              <InputLabel>Role</InputLabel>
+              <Select
+                name="role"
+                value={newUser.role}
+                label="Role"
+                onChange={handleChange}
+              >
+                <MenuItem value="">Select role</MenuItem>
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="faculty">Faculty</MenuItem>
+                <MenuItem value="student">Student</MenuItem>
+                <MenuItem value="staff">Staff</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              value={newUser.password}
+              onChange={handleChange}
+              fullWidth
+              required
+              helperText="Minimum 8 characters"
+            />
+            <FormControl fullWidth>
+              <InputLabel>Status</InputLabel>
+              <Select
+                name="status"
+                value={newUser.status}
+                label="Status"
+                onChange={handleChange}
+              >
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowModal(false)}>Cancel</Button>
+          <Button onClick={handleAddUser} variant="contained">
+            Add User
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {showEditModal && editingUser && (
-        <div className="modal-overlay" onClick={handleOverlayClick}>
-          <div className="modal-dialog">
-            <div className="modal-header">
-              <h3>Edit User</h3>
-              <button className="modal-close" onClick={() => setShowEditModal(false)}>
-                <CloseIcon />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="form-group">
-                <label>Full Name <span className="required">*</span></label>
-                <input
-                  type="text"
-                  name="name"
-                  value={editingUser.name}
-                  onChange={handleEditChange}
-                  className="form-input"
-                  placeholder="Enter full name"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Email Address <span className="required">*</span></label>
-                <input
-                  type="email"
-                  name="email"
-                  value={editingUser.email}
-                  onChange={handleEditChange}
-                  className="form-input"
-                  placeholder="Enter email address"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Role <span className="required">*</span></label>
-                <select
+      {/* Edit User Modal - Material-UI Dialog */}
+      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit User</DialogTitle>
+        <DialogContent>
+          {editingUser && (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 2 }}>
+              <TextField
+                label="Full Name"
+                name="name"
+                value={editingUser.name}
+                onChange={handleEditChange}
+                fullWidth
+                required
+              />
+              <TextField
+                label="Email Address"
+                name="email"
+                type="email"
+                value={editingUser.email}
+                onChange={handleEditChange}
+                fullWidth
+                required
+              />
+              <FormControl fullWidth required>
+                <InputLabel>Role</InputLabel>
+                <Select
                   name="role"
                   value={editingUser.role}
+                  label="Role"
                   onChange={handleEditChange}
-                  className="form-input"
-                  required
                 >
-                  <option value="admin">Admin</option>
-                  <option value="faculty">Faculty</option>
-                  <option value="student">Student</option>
-                  <option value="staff">Staff</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>New Password <span className="optional">(leave blank to keep current)</span></label>
-                <input
-                  type="password"
-                  name="password"
-                  value={editingUser.password}
-                  onChange={handleEditChange}
-                  className="form-input"
-                  placeholder="Enter new password (min. 8 characters)"
-                  minLength={8}
-                />
-              </div>
-              <div className="form-group">
-                <label>Status <span className="required">*</span></label>
-                <select
+                  <MenuItem value="admin">Admin</MenuItem>
+                  <MenuItem value="faculty">Faculty</MenuItem>
+                  <MenuItem value="student">Student</MenuItem>
+                  <MenuItem value="staff">Staff</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label="New Password"
+                name="password"
+                type="password"
+                value={editingUser.password}
+                onChange={handleEditChange}
+                fullWidth
+                helperText="Leave blank to keep current password"
+              />
+              <FormControl fullWidth>
+                <InputLabel>Status</InputLabel>
+                <Select
                   name="status"
                   value={editingUser.status}
+                  label="Status"
                   onChange={handleEditChange}
-                  className="form-input"
-                  required
                 >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="btn-cancel" onClick={() => setShowEditModal(false)}>
-                Cancel
-              </button>
-              <button className="btn-submit" onClick={handleUpdateUser}>
-                Update User
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                  <MenuItem value="active">Active</MenuItem>
+                  <MenuItem value="inactive">Inactive</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowEditModal(false)}>Cancel</Button>
+          <Button onClick={handleUpdateUser} variant="contained">
+            Update User
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
@@ -617,7 +579,6 @@ function UsersContent() {
 export default function Users() {
   const [user, setUser] = useState(null);
   const [activeMenu, setActiveMenu] = useState("Users");
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -650,39 +611,23 @@ export default function Users() {
     setAnchorEl(null);
   };
 
-  const handleSettings = () => {
-    handleMenuClose();
-    alert("Settings feature coming soon!");
-  };
-
-  const handleHelp = () => {
-    handleMenuClose();
-    alert("Help & Support feature coming soon!");
-  };
-
   if (!user) return null;
 
   const mainMenuItems = [
     { label: "Dashboard", subtitle: "Overview & Analytics", icon: DashboardIcon, route: "/dashboard" },
     { label: "Users", subtitle: "User Management", icon: PeopleIcon, route: "/users" },
-    { label: "Students", subtitle: "Student Records", icon: SchoolIcon, route: null },
-    { label: "Faculty", subtitle: "Faculty Management", icon: PersonIcon, route: null },
-    { label: "Courses", subtitle: "Course Catalog", icon: AssignmentIcon, route: null },
-    { label: "Academic Years", subtitle: "Academic Periods", icon: CalendarMonthIcon, route: null },
-    { label: "Departments", subtitle: "Department Structure", icon: BusinessIcon, route: null },
+    { label: "Students", subtitle: "Student Records", icon: SchoolIcon, route: "/students" },
+    { label: "Faculty", subtitle: "Faculty Management", icon: PersonIcon, route: "/faculty" },
+    { label: "Courses", subtitle: "Course Catalog", icon: AssignmentIcon, route: "/courses" },
+    { label: "Academic Years", subtitle: "Academic Periods", icon: CalendarMonthIcon, route: "/academic-years" },
+    { label: "Departments", subtitle: "Department Structure", icon: BusinessIcon, route: "/departments" },
   ];
 
   return (
-    <Box className="dashboard-layout">
-      <Drawer 
-        variant="permanent" 
-        className="sidebar"
-        sx={{ 
-          width: drawerWidth,
-          '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' }
-        }}
-      >
-        <div className="sidebar-header" onClick={() => window.location.href = '/dashboard'} style={{ cursor: 'pointer' }}>
+    <Box className="users-layout">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-header" onClick={() => window.location.href = "/dashboard"} style={{ cursor: 'pointer' }}>
           <div className="logo-container">
             <div className="logo-icon">E</div>
             <div className="logo-text">
@@ -692,78 +637,70 @@ export default function Users() {
           </div>
         </div>
 
-        <Divider />
-
-        <div className="sidebar-section">
-          <div className="section-label">MAIN MENU</div>
-          <List>
-            {mainMenuItems.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <ListItem key={item.label} disablePadding>
-                  <ListItemButton 
-                    selected={activeMenu === item.label} 
-                    onClick={() => {
-                      if (item.route) {
-                        window.location.href = item.route;
-                      } else {
-                        setActiveMenu(item.label);
-                      }
-                    }}
-                    className="sidebar-menu-item"
-                  >
-                    <ListItemIcon className="menu-icon">
-                      <IconComponent />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary={item.label}
-                      secondary={item.subtitle}
-                      primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: 500 }}
-                      secondaryTypographyProps={{ fontSize: '0.75rem' }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
+        <div className="sidebar-search">
+          <SearchIcon className="search-icon" />
+          <input type="text" placeholder="Search..." />
         </div>
 
-        <div style={{ flex: 1 }} />
-        
+        <nav className="sidebar-nav">
+          <div className="nav-section">
+            <div className="nav-section-title">MAIN MENU</div>
+            {mainMenuItems.map((item) => {
+              const IconComponent = item.icon;
+              const isActive = activeMenu === item.label;
+              return (
+                <a
+                  key={item.label}
+                  href={item.route || "#"}
+                  className={`nav-item ${isActive ? "active" : ""}`}
+                  onClick={(e) => {
+                    if (!item.route) {
+                      e.preventDefault();
+                      setActiveMenu(item.label);
+                    }
+                  }}
+                >
+                  <IconComponent className="nav-icon" />
+                  <div className="nav-text">
+                    <span className="nav-title">{item.label}</span>
+                    <span className="nav-subtitle">{item.subtitle}</span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </nav>
+
         <div className="sidebar-footer">
-          <Divider />
           <div className="footer-links">
-            <button className="footer-link" onClick={handleSettings}>
-              <SettingsIcon style={{ fontSize: '1rem', marginRight: '4px' }} />
+            <button className="footer-link">
+              <SettingsIcon />
               Settings
             </button>
             <span className="footer-divider">·</span>
-            <button className="footer-link" onClick={handleHelp}>
-              <HelpIcon style={{ fontSize: '1rem', marginRight: '4px' }} />
-              Help
+            <button className="footer-link">
+              <HelpIcon />
+              Help & Support
             </button>
           </div>
         </div>
-      </Drawer>
+      </aside>
 
+      {/* Main Content */}
       <Box className="main-content-wrapper">
+        {/* Top App Bar */}
         <AppBar position="fixed" className="top-appbar" elevation={0}>
           <Toolbar>
-            <IconButton className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)}>
-              <MenuIcon />
-            </IconButton>
-            
             <Typography variant="h6" className="page-title">
-              {activeMenu}
+              Users
+            </Typography>
+            <Typography variant="body2" className="page-subtitle">
+              User Management
             </Typography>
 
             <div style={{ flexGrow: 1 }} />
 
-            <Chip 
-              label={user.role || "admin"} 
-              size="small" 
-              className="user-role-chip"
-            />
+            <Chip label={user.role || "admin"} size="small" className="user-role-chip" />
 
             <IconButton className="notification-btn">
               <Badge badgeContent={4} color="error">
@@ -804,11 +741,11 @@ export default function Users() {
                 </div>
               </MenuItem>
               <Divider />
-              <MenuItem onClick={handleSettings}>
+              <MenuItem onClick={handleMenuClose}>
                 <SettingsIcon fontSize="small" style={{ marginRight: '12px', color: '#6b7280' }} />
                 Settings
               </MenuItem>
-              <MenuItem onClick={handleHelp}>
+              <MenuItem onClick={handleMenuClose}>
                 <HelpIcon fontSize="small" style={{ marginRight: '12px', color: '#6b7280' }} />
                 Help & Support
               </MenuItem>
@@ -821,6 +758,7 @@ export default function Users() {
           </Toolbar>
         </AppBar>
 
+        {/* Page Content */}
         <Box className="page-content">
           <Toolbar />
           <UsersContent />

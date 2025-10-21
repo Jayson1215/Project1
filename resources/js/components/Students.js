@@ -6,28 +6,27 @@ import axios from "axios";
 
 // Material-UI Components
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
 import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";
-import Toolbar from "@mui/material/Toolbar";
-import AppBar from "@mui/material/AppBar";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 
 // Material-UI Icons
 import SearchIcon from "@mui/icons-material/Search";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -40,12 +39,9 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import BusinessIcon from "@mui/icons-material/Business";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import MenuIcon from "@mui/icons-material/Menu";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HelpIcon from "@mui/icons-material/Help";
-
-const drawerWidth = 260;
 
 function StudentsContent() {
   const [showModal, setShowModal] = useState(false);
@@ -92,7 +88,7 @@ function StudentsContent() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/students")
+      const response = await axios.get("/api/students");
       const studentsWithAvatars = response.data.map(student => ({
         ...student,
         initials: student.full_name.charAt(0).toUpperCase(),
@@ -121,34 +117,30 @@ function StudentsContent() {
     fourthYear: students.filter(s => s.year_level === 4).length,
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNewStudent((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (field, value) => {
+    setNewStudent((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditingStudent((prev) => ({ ...prev, [name]: value }));
+  const handleEditChange = (field, value) => {
+    setEditingStudent((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleAddStudent = async () => {
-  // Validate required fields
-  if (
-    !newStudent.student_id ||
-    !newStudent.full_name ||
-    !newStudent.email ||
-    !newStudent.department ||
-    !newStudent.year_level ||
-    !newStudent.enrollment_date
-  ) {
-    setError("Please fill out all required fields!");
-    return;
-  }
+    if (
+      !newStudent.student_id ||
+      !newStudent.full_name ||
+      !newStudent.email ||
+      !newStudent.department ||
+      !newStudent.year_level ||
+      !newStudent.enrollment_date
+    ) {
+      setError("Please fill out all required fields!");
+      return;
+    }
 
-  try {
-    // ✅ Ensure you use the full backend URL
-    const response = await axios.post("http://127.0.0.1:8000/api/students", newStudent, {
-      headers: { "Content-Type": "application/json" },
+    try {
+      const response = await axios.post("/api/students", newStudent, {
+        headers: { "Content-Type": "application/json" },
       });
 
       if (response.status === 201 || response.status === 200) {
@@ -168,25 +160,20 @@ function StudentsContent() {
           guardian_name: "",
           guardian_phone: "",
         });
-        await fetchStudents(); // Refresh table
-     } else {
+        await fetchStudents();
+      } else {
         setError("Unexpected response from server. Please check your backend.");
-     }
-   } catch (error) {
-     console.error("Error adding student:", error);
-
-     if (error.response?.data?.errors) {
+      }
+    } catch (error) {
+      console.error("Error adding student:", error);
+      if (error.response?.data?.errors) {
         const errorMessages = Object.values(error.response.data.errors).flat().join(", ");
         setError(errorMessages);
-     } else {
-        setError(
-          error.response?.data?.message ||
-           "Failed to add student. Please check your API connection."
-        );
+      } else {
+        setError(error.response?.data?.message || "Failed to add student. Please check your API connection.");
       }
     }
   };
-
 
   const handleEditStudent = (student) => {
     setEditingStudent({
@@ -243,13 +230,6 @@ function StudentsContent() {
     } catch (error) {
       console.error("Error deleting student:", error);
       setError(error.response?.data?.message || "Failed to delete student. Please try again.");
-    }
-  };
-
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      setShowModal(false);
-      setShowEditModal(false);
     }
   };
 
@@ -494,377 +474,250 @@ function StudentsContent() {
         </div>
       </div>
 
-      {/* Add Student Modal */}
-      {showModal && (
-        <div className="modal-overlay" onClick={handleOverlayClick}>
-          <div className="modal-dialog modal-large">
-            <div className="modal-header">
-              <h3>Add New Student</h3>
-              <button className="modal-close" onClick={() => setShowModal(false)}>
-                <CloseIcon />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Student ID <span className="required">*</span></label>
-                  <input
-                    type="text"
-                    name="student_id"
-                    value={newStudent.student_id}
-                    onChange={handleChange}
-                    className="form-input"
-                    placeholder="e.g., STU001"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Full Name <span className="required">*</span></label>
-                  <input
-                    type="text"
-                    name="full_name"
-                    value={newStudent.full_name}
-                    onChange={handleChange}
-                    className="form-input"
-                    placeholder="Enter full name"
-                    required
-                  />
-                </div>
-              </div>
+      {/* Add Student Modal - Material-UI Dialog */}
+      <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Add New Student</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, pt: 2 }}>
+            <TextField
+              label="Student ID"
+              value={newStudent.student_id}
+              onChange={(e) => handleChange("student_id", e.target.value)}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Full Name"
+              value={newStudent.full_name}
+              onChange={(e) => handleChange("full_name", e.target.value)}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Email Address"
+              type="email"
+              value={newStudent.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Phone Number"
+              value={newStudent.phone}
+              onChange={(e) => handleChange("phone", e.target.value)}
+              fullWidth
+            />
+            <FormControl fullWidth required>
+              <InputLabel>Department</InputLabel>
+              <Select
+                value={newStudent.department}
+                label="Department"
+                onChange={(e) => handleChange("department", e.target.value)}
+              >
+                <MenuItem value="">Select department</MenuItem>
+                <MenuItem value="Computer Science">Computer Science</MenuItem>
+                <MenuItem value="Mathematics">Mathematics</MenuItem>
+                <MenuItem value="Physics">Physics</MenuItem>
+                <MenuItem value="Engineering">Engineering</MenuItem>
+                <MenuItem value="Business">Business</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth required>
+              <InputLabel>Year Level</InputLabel>
+              <Select
+                value={newStudent.year_level}
+                label="Year Level"
+                onChange={(e) => handleChange("year_level", e.target.value)}
+              >
+                <MenuItem value="">Select year</MenuItem>
+                <MenuItem value="1">1st Year</MenuItem>
+                <MenuItem value="2">2nd Year</MenuItem>
+                <MenuItem value="3">3rd Year</MenuItem>
+                <MenuItem value="4">4th Year</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              label="Enrollment Date"
+              type="date"
+              value={newStudent.enrollment_date}
+              onChange={(e) => handleChange("enrollment_date", e.target.value)}
+              fullWidth
+              required
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="Date of Birth"
+              type="date"
+              value={newStudent.date_of_birth}
+              onChange={(e) => handleChange("date_of_birth", e.target.value)}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              label="Guardian Name"
+              value={newStudent.guardian_name}
+              onChange={(e) => handleChange("guardian_name", e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="Guardian Phone"
+              value={newStudent.guardian_phone}
+              onChange={(e) => handleChange("guardian_phone", e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="Address"
+              value={newStudent.address}
+              onChange={(e) => handleChange("address", e.target.value)}
+              fullWidth
+              multiline
+              rows={3}
+              sx={{ gridColumn: "1 / -1" }}
+            />
+            <FormControl fullWidth>
+              <InputLabel>Status</InputLabel>
+              <Select
+                value={newStudent.status}
+                label="Status"
+                onChange={(e) => handleChange("status", e.target.value)}
+              >
+                <MenuItem value="active">Active</MenuItem>
+                <MenuItem value="inactive">Inactive</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowModal(false)}>Cancel</Button>
+          <Button onClick={handleAddStudent} variant="contained">
+            Add Student
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Email Address <span className="required">*</span></label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={newStudent.email}
-                    onChange={handleChange}
-                    className="form-input"
-                    placeholder="Enter email address"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={newStudent.phone}
-                    onChange={handleChange}
-                    className="form-input"
-                    placeholder="Enter phone number"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Department <span className="required">*</span></label>
-                  <select
-                    name="department"
-                    value={newStudent.department}
-                    onChange={handleChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="">Select department</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Physics">Physics</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Business">Business</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Year Level <span className="required">*</span></label>
-                  <select
-                    name="year_level"
-                    value={newStudent.year_level}
-                    onChange={handleChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="">Select year</option>
-                    <option value="1">1st Year</option>
-                    <option value="2">2nd Year</option>
-                    <option value="3">3rd Year</option>
-                    <option value="4">4th Year</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Enrollment Date <span className="required">*</span></label>
-                  <input
-                    type="date"
-                    name="enrollment_date"
-                    value={newStudent.enrollment_date}
-                    onChange={handleChange}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Date of Birth</label>
-                  <input
-                    type="date"
-                    name="date_of_birth"
-                    value={newStudent.date_of_birth}
-                    onChange={handleChange}
-                    className="form-input"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Address</label>
-                <textarea
-                  name="address"
-                  value={newStudent.address}
-                  onChange={handleChange}
-                  className="form-input"
-                  placeholder="Enter complete address"
-                  rows="3"
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Guardian Name</label>
-                  <input
-                    type="text"
-                    name="guardian_name"
-                    value={newStudent.guardian_name}
-                    onChange={handleChange}
-                    className="form-input"
-                    placeholder="Enter guardian's name"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Guardian Phone</label>
-                  <input
-                    type="tel"
-                    name="guardian_phone"
-                    value={newStudent.guardian_phone}
-                    onChange={handleChange}
-                    className="form-input"
-                    placeholder="Enter guardian's phone"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Status</label>
-                <select
-                  name="status"
-                  value={newStudent.status}
-                  onChange={handleChange}
-                  className="form-input"
+      {/* Edit Student Modal - Material-UI Dialog */}
+      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} maxWidth="md" fullWidth>
+        <DialogTitle>Edit Student</DialogTitle>
+        <DialogContent>
+          {editingStudent && (
+            <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, pt: 2 }}>
+              <TextField
+                label="Student ID"
+                value={editingStudent.student_id}
+                onChange={(e) => handleEditChange("student_id", e.target.value)}
+                fullWidth
+                required
+              />
+              <TextField
+                label="Full Name"
+                value={editingStudent.full_name}
+                onChange={(e) => handleEditChange("full_name", e.target.value)}
+                fullWidth
+                required
+              />
+              <TextField
+                label="Email Address"
+                type="email"
+                value={editingStudent.email}
+                onChange={(e) => handleEditChange("email", e.target.value)}
+                fullWidth
+                required
+              />
+              <TextField
+                label="Phone Number"
+                value={editingStudent.phone}
+                onChange={(e) => handleEditChange("phone", e.target.value)}
+                fullWidth
+              />
+              <FormControl fullWidth required>
+                <InputLabel>Department</InputLabel>
+                <Select
+                  value={editingStudent.department}
+                  label="Department"
+                  onChange={(e) => handleEditChange("department", e.target.value)}
                 >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="btn-cancel" onClick={() => setShowModal(false)}>
-                Cancel
-              </button>
-              <button className="btn-submit" onClick={handleAddStudent}>
-                Add Student
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Edit Student Modal */}
-      {showEditModal && editingStudent && (
-        <div className="modal-overlay" onClick={handleOverlayClick}>
-          <div className="modal-dialog modal-large">
-            <div className="modal-header">
-              <h3>Edit Student</h3>
-              <button className="modal-close" onClick={() => setShowEditModal(false)}>
-                <CloseIcon />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Student ID <span className="required">*</span></label>
-                  <input
-                    type="text"
-                    name="student_id"
-                    value={editingStudent.student_id}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    placeholder="e.g., STU001"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Full Name <span className="required">*</span></label>
-                  <input
-                    type="text"
-                    name="full_name"
-                    value={editingStudent.full_name}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    placeholder="Enter full name"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Email Address <span className="required">*</span></label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={editingStudent.email}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    placeholder="Enter email address"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={editingStudent.phone}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    placeholder="Enter phone number"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Department <span className="required">*</span></label>
-                  <select
-                    name="department"
-                    value={editingStudent.department}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="">Select department</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Physics">Physics</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Business">Business</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Year Level <span className="required">*</span></label>
-                  <select
-                    name="year_level"
-                    value={editingStudent.year_level}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="">Select year</option>
-                    <option value="1">1st Year</option>
-                    <option value="2">2nd Year</option>
-                    <option value="3">3rd Year</option>
-                    <option value="4">4th Year</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Enrollment Date <span className="required">*</span></label>
-                  <input
-                    type="date"
-                    name="enrollment_date"
-                    value={editingStudent.enrollment_date}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Date of Birth</label>
-                  <input
-                    type="date"
-                    name="date_of_birth"
-                    value={editingStudent.date_of_birth}
-                    onChange={handleEditChange}
-                    className="form-input"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Address</label>
-                <textarea
-                  name="address"
-                  value={editingStudent.address}
-                  onChange={handleEditChange}
-                  className="form-input"
-                  placeholder="Enter complete address"
-                  rows="3"
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Guardian Name</label>
-                  <input
-                    type="text"
-                    name="guardian_name"
-                    value={editingStudent.guardian_name}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    placeholder="Enter guardian's name"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Guardian Phone</label>
-                  <input
-                    type="tel"
-                    name="guardian_phone"
-                    value={editingStudent.guardian_phone}
-                    onChange={handleEditChange}
-                    className="form-input"
-                    placeholder="Enter guardian's phone"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Status</label>
-                <select
-                  name="status"
+                  <MenuItem value="">Select department</MenuItem>
+                  <MenuItem value="Computer Science">Computer Science</MenuItem>
+                  <MenuItem value="Mathematics">Mathematics</MenuItem>
+                  <MenuItem value="Physics">Physics</MenuItem>
+                  <MenuItem value="Engineering">Engineering</MenuItem>
+                  <MenuItem value="Business">Business</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth required>
+                <InputLabel>Year Level</InputLabel>
+                <Select
+                  value={editingStudent.year_level}
+                  label="Year Level"
+                  onChange={(e) => handleEditChange("year_level", e.target.value)}
+                >
+                  <MenuItem value="">Select year</MenuItem>
+                  <MenuItem value="1">1st Year</MenuItem>
+                  <MenuItem value="2">2nd Year</MenuItem>
+                  <MenuItem value="3">3rd Year</MenuItem>
+                  <MenuItem value="4">4th Year</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label="Enrollment Date"
+                type="date"
+                value={editingStudent.enrollment_date}
+                onChange={(e) => handleEditChange("enrollment_date", e.target.value)}
+                fullWidth
+                required
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="Date of Birth"
+                type="date"
+                value={editingStudent.date_of_birth}
+                onChange={(e) => handleEditChange("date_of_birth", e.target.value)}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="Guardian Name"
+                value={editingStudent.guardian_name}
+                onChange={(e) => handleEditChange("guardian_name", e.target.value)}
+                fullWidth
+              />
+              <TextField
+                label="Guardian Phone"
+                value={editingStudent.guardian_phone}
+                onChange={(e) => handleEditChange("guardian_phone", e.target.value)}
+                fullWidth
+              />
+              <TextField
+                label="Address"
+                value={editingStudent.address}
+                onChange={(e) => handleEditChange("address", e.target.value)}
+                fullWidth
+                multiline
+                rows={3}
+                sx={{ gridColumn: "1 / -1" }}
+              />
+              <FormControl fullWidth>
+                <InputLabel>Status</InputLabel>
+                <Select
                   value={editingStudent.status}
-                  onChange={handleEditChange}
-                  className="form-input"
+                  label="Status"
+                  onChange={(e) => handleEditChange("status", e.target.value)}
                 >
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                </select>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="btn-cancel" onClick={() => setShowEditModal(false)}>
-                Cancel
-              </button>
-              <button className="btn-submit" onClick={handleUpdateStudent}>
-                Update Student
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                  <MenuItem value="active">Active</MenuItem>
+                  <MenuItem value="inactive">Inactive</MenuItem>
+                  <MenuItem value="graduated">Graduated</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowEditModal(false)}>Cancel</Button>
+          <Button onClick={handleUpdateStudent} variant="contained">
+            Update Student
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
@@ -872,7 +725,6 @@ function StudentsContent() {
 export default function Students() {
   const [user, setUser] = useState(null);
   const [activeMenu, setActiveMenu] = useState("Students");
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -905,44 +757,23 @@ export default function Students() {
     setAnchorEl(null);
   };
 
-  const handleSettings = () => {
-    handleMenuClose();
-    alert("Settings feature coming soon!");
-  };
-
-  const handleHelp = () => {
-    handleMenuClose();
-    alert("Help & Support feature coming soon!");
-  };
-
   if (!user) return null;
 
   const mainMenuItems = [
     { label: "Dashboard", subtitle: "Overview & Analytics", icon: DashboardIcon, route: "/dashboard" },
     { label: "Users", subtitle: "User Management", icon: PeopleIcon, route: "/users" },
     { label: "Students", subtitle: "Student Records", icon: SchoolIcon, route: "/students" },
-    { label: "Faculty", subtitle: "Faculty Management", icon: PersonIcon, route: null },
-    { label: "Courses", subtitle: "Course Catalog", icon: AssignmentIcon, route: null },
-    { label: "Academic Years", subtitle: "Academic Periods", icon: CalendarMonthIcon, route: null },
-    { label: "Departments", subtitle: "Department Structure", icon: BusinessIcon, route: null },
-  ];
-
-  const bottomMenuItems = [
-    { label: "Settings", icon: SettingsIcon, action: handleSettings },
-    { label: "Help & Support", icon: HelpIcon, action: handleHelp },
+    { label: "Faculty", subtitle: "Faculty Management", icon: PersonIcon, route: "/faculty" },
+    { label: "Courses", subtitle: "Course Catalog", icon: AssignmentIcon, route: "/courses" },
+    { label: "Academic Years", subtitle: "Academic Periods", icon: CalendarMonthIcon, route: "/academic-years" },
+    { label: "Departments", subtitle: "Department Structure", icon: BusinessIcon, route: "/departments" },
   ];
 
   return (
-    <Box className="dashboard-layout">
-      <Drawer 
-        variant="permanent" 
-        className="sidebar"
-        sx={{ 
-          width: drawerWidth,
-          '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' }
-        }}
-      >
-        <div className="sidebar-header" onClick={() => window.location.href = '/dashboard'} style={{ cursor: 'pointer' }}>
+    <Box className="students-layout">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-header" onClick={() => window.location.href = "/dashboard"} style={{ cursor: 'pointer' }}>
           <div className="logo-container">
             <div className="logo-icon">E</div>
             <div className="logo-text">
@@ -952,78 +783,66 @@ export default function Students() {
           </div>
         </div>
 
-        <Divider />
-
-        <div className="sidebar-section">
-          <div className="section-label">MAIN MENU</div>
-          <List>
-            {mainMenuItems.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <ListItem key={item.label} disablePadding>
-                  <ListItemButton 
-                    selected={activeMenu === item.label} 
-                    onClick={() => {
-                      if (item.route) {
-                        window.location.href = item.route;
-                      } else {
-                        setActiveMenu(item.label);
-                      }
-                    }}
-                    className="sidebar-menu-item"
-                  >
-                    <ListItemIcon className="menu-icon">
-                      <IconComponent />
-                    </ListItemIcon>
-                    <ListItemText 
-                      primary={item.label}
-                      secondary={item.subtitle}
-                      primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: 500 }}
-                      secondaryTypographyProps={{ fontSize: '0.75rem' }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
+        <div className="sidebar-search">
+          <SearchIcon className="search-icon" />
+          <input type="text" placeholder="Search..." />
         </div>
 
-        <div style={{ flex: 1 }} />
-        
+        <nav className="sidebar-nav">
+          <div className="nav-section">
+            <div className="nav-section-title">MAIN MENU</div>
+            {mainMenuItems.map((item) => {
+              const IconComponent = item.icon;
+              const isActive = activeMenu === item.label;
+              return (
+                <a
+                  key={item.label}
+                  href={item.route || "#"}
+                  className={`nav-item ${isActive ? "active" : ""}`}
+                  onClick={(e) => {
+                    if (!item.route) {
+                      e.preventDefault();
+                      setActiveMenu(item.label);
+                    }
+                  }}
+                >
+                  <IconComponent className="nav-icon" />
+                  <div className="nav-text">
+                    <span className="nav-title">{item.label}</span>
+                    <span className="nav-subtitle">{item.subtitle}</span>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </nav>
+
         <div className="sidebar-footer">
-          <Divider />
           <div className="footer-links">
-            <button className="footer-link" onClick={handleSettings}>
-              <SettingsIcon style={{ fontSize: '1rem', marginRight: '4px' }} />
+            <button className="footer-link">
+              <SettingsIcon />
               Settings
             </button>
             <span className="footer-divider">·</span>
-            <button className="footer-link" onClick={handleHelp}>
-              <HelpIcon style={{ fontSize: '1rem', marginRight: '4px' }} />
-              Help
+            <button className="footer-link">
+              <HelpIcon />
+              Help & Support
             </button>
           </div>
         </div>
-      </Drawer>
+      </aside>
 
-      <Box className="main-content-wrapper">
-        <AppBar position="fixed" className="top-appbar" elevation={0}>
-          <Toolbar>
-            <IconButton className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)}>
-              <MenuIcon />
-            </IconButton>
-            
-            <Typography variant="h6" className="page-title">
-              {activeMenu}
-            </Typography>
+      {/* Main Content */}
+      <main className="main-content">
+        {/* Top Header */}
+        <header className="top-header">
+          <div>
+            <h2 className="page-title">Students</h2>
+            <span className="page-subtitle">Student Records</span>
+          </div>
 
-            <div style={{ flexGrow: 1 }} />
-
-            <Chip 
-              label={user.role || "admin"} 
-              size="small" 
-              className="user-role-chip"
-            />
+          <div className="header-actions">
+            <Chip label={user.role?.toUpperCase() || "ADMIN"} size="small" className="user-role-chip" />
 
             <IconButton className="notification-btn">
               <Badge badgeContent={4} color="error">
@@ -1055,40 +874,40 @@ export default function Students() {
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
               <MenuItem disabled>
-                <Avatar sx={{ bgcolor: '#4f46e5' }}>
-                  {user.full_name ? user.full_name.charAt(0) : "U"}
-                </Avatar>
-                <div style={{ marginLeft: '8px' }}>
-                  <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{user.full_name || "User"}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{user.email || "user@example.com"}</div>
-                </div>
+                <Box display="flex" flexDirection="column">
+                  <strong>{user.full_name}</strong>
+                  <small className="text-muted">{user.role}</small>
+                </Box>
               </MenuItem>
               <Divider />
-              <MenuItem onClick={handleSettings}>
-                <SettingsIcon fontSize="small" style={{ marginRight: '12px', color: '#6b7280' }} />
-                Settings
+              <MenuItem onClick={handleMenuClose}>
+                <PersonIcon sx={{ mr: 1, fontSize: 20 }} /> Profile
               </MenuItem>
-              <MenuItem onClick={handleHelp}>
-                <HelpIcon fontSize="small" style={{ marginRight: '12px', color: '#6b7280' }} />
-                Help & Support
+              <MenuItem onClick={handleMenuClose}>
+                <SettingsIcon sx={{ mr: 1, fontSize: 20 }} /> Settings
               </MenuItem>
               <Divider />
-              <MenuItem onClick={handleLogout}>
-                <LogoutIcon fontSize="small" style={{ marginRight: '12px', color: '#ef4444' }} />
-                <span style={{ color: '#ef4444', fontWeight: 600 }}>Logout</span>
+              <MenuItem onClick={handleLogout} sx={{ color: "red" }}>
+                <LogoutIcon sx={{ mr: 1, fontSize: 20 }} /> Logout
               </MenuItem>
             </Menu>
-          </Toolbar>
-        </AppBar>
+          </div>
+        </header>
 
-        <Box className="page-content">
-          <Toolbar />
+        {/* Students Main Content */}
+        <div className="content-body">
           <StudentsContent />
-        </Box>
-      </Box>
+        </div>
+      </main>
     </Box>
   );
 }
 
-const root = document.getElementById("app");
-if (root) ReactDOM.createRoot(root).render(<Students />);
+// Mount React Component
+document.addEventListener("DOMContentLoaded", () => {
+  const rootElement = document.getElementById("app");
+  if (rootElement) {
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(<Students />);
+  }
+});

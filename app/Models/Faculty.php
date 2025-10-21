@@ -4,43 +4,86 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Faculty extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
+    /**
+     * The table associated with the model.
+     */
     protected $table = 'faculty';
 
+    /**
+     * The attributes that are mass assignable.
+     */
     protected $fillable = [
         'faculty_id',
-        'name',
+        'full_name',
         'email',
         'phone',
-        'department_id',
+        'department',
         'position',
         'specialization',
-        'hire_date',
+        'employment_type',
         'status',
-        'user_id',
+        'hire_date',
+        'date_of_birth',
+        'address',
+        'emergency_contact',
+        'emergency_phone',
+        'qualifications',
+        'years_of_experience',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     */
     protected $casts = [
         'hire_date' => 'date',
+        'date_of_birth' => 'date',
+        'years_of_experience' => 'integer',
     ];
 
-    // Relationships
-    public function user()
+    /**
+     * Scope to filter active faculty.
+     */
+    public function scopeActive($query)
     {
-        return $this->belongsTo(User::class);
+        return $query->where('status', 'active');
     }
 
-    public function department()
+    /**
+     * Scope to filter by department.
+     */
+    public function scopeByDepartment($query, $department)
     {
-        return $this->belongsTo(Department::class);
+        return $query->where('department', $department);
     }
 
-    public function courses()
+    /**
+     * Scope to filter by position.
+     */
+    public function scopeByPosition($query, $position)
     {
-        return $this->hasMany(Course::class);
+        return $query->where('position', $position);
+    }
+
+    /**
+     * Custom accessor for formatted status.
+     */
+    public function getFormattedStatusAttribute()
+    {
+        return ucfirst($this->status);
+    }
+
+    /**
+     * Custom accessor for formatted employment type.
+     */
+    public function getFormattedEmploymentTypeAttribute()
+    {
+        return ucfirst(str_replace('-', ' ', $this->employment_type));
     }
 }
+

@@ -42,98 +42,121 @@ import HelpIcon from "@mui/icons-material/Help";
 const drawerWidth = 260;
 
 function DashboardOverview({ user }) {
-  const stats = [
-    { 
-      title: "Total Students", 
+  // ✅ NEW: dynamic stats from backend
+  const [stats, setStats] = useState({
+    totalStudents: 0,
+    totalFaculty: 0,
+    totalCourses: 0,
+    totalDepartments: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get("/api/dashboard/stats");
+        setStats(response.data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const statCards = [
+    {
+      title: "Total Students",
       subtitle: "Active enrollments",
-      value: "50", 
+      value: stats.totalStudents,
       icon: SchoolIcon,
-      color: "#2196F3", 
+      color: "#2196F3",
       change: "+12% from last month",
-      bgGradient: "linear-gradient(135deg, #2196F3 0%, #1976D2 100%)"
+      bgGradient: "linear-gradient(135deg, #2196F3 0%, #1976D2 100%)",
     },
-    { 
-      title: "Faculty Members", 
+    {
+      title: "Faculty Members",
       subtitle: "Teaching staff",
-      value: "90", 
+      value: stats.totalFaculty,
       icon: PersonIcon,
-      color: "#9C27B0", 
+      color: "#9C27B0",
       change: "+6% from last month",
-      bgGradient: "linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%)"
+      bgGradient: "linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%)",
     },
-    { 
-      title: "Active Courses", 
+    {
+      title: "Active Courses",
       subtitle: "This semester",
-      value: "5", 
+      value: stats.totalCourses,
       icon: AssignmentIcon,
-      color: "#FF5722", 
+      color: "#FF5722",
       change: "+8% from last month",
-      bgGradient: "linear-gradient(135deg, #FF5722 0%, #E64A19 100%)"
+      bgGradient: "linear-gradient(135deg, #FF5722 0%, #E64A19 100%)",
     },
-    { 
-      title: "Departments", 
+    {
+      title: "Departments",
       subtitle: "Academic divisions",
-      value: "9", 
+      value: stats.totalDepartments,
       icon: BusinessIcon,
-      color: "#4CAF50", 
+      color: "#4CAF50",
       change: "+0% from last month",
-      bgGradient: "linear-gradient(135deg, #4CAF50 0%, #388E3C 100%)"
+      bgGradient: "linear-gradient(135deg, #4CAF50 0%, #388E3C 100%)",
     },
   ];
 
   const recentActivities = [
-    { 
-      initials: "JS", 
+    {
+      initials: "JS",
       bgColor: "#E3F2FD",
       textColor: "#1976D2",
-      action: "New student enrolled", 
-      details: "Jayson T. Velasco - Computer Science", 
-      time: "2 hours ago" 
+      action: "New student enrolled",
+      details: "Jayson T. Velasco - Computer Science",
+      time: "2 hours ago",
     },
-    { 
-      initials: "CS", 
+    {
+      initials: "CS",
       bgColor: "#FCE4EC",
       textColor: "#C2185B",
-      action: "Course updated", 
-      details: "Data Structures - CS101", 
-      time: "4 hours ago" 
+      action: "Course updated",
+      details: "Data Structures - CS101",
+      time: "4 hours ago",
     },
-    { 
-      initials: "JD", 
+    {
+      initials: "JD",
       bgColor: "#F3E5F5",
       textColor: "#7B1FA2",
-      action: "Faculty added", 
-      details: "Dr. Jane Doe - Mathematics Dept", 
-      time: "1 day ago" 
+      action: "Faculty added",
+      details: "Dr. Jane Doe - Mathematics Dept",
+      time: "1 day ago",
     },
-    { 
-      initials: "AY", 
+    {
+      initials: "AY",
       bgColor: "#FFF3E0",
       textColor: "#E65100",
-      action: "Academic year created", 
-      details: "2025-2026 Academic Year", 
-      time: "2 days ago" 
+      action: "Academic year created",
+      details: "2025-2026 Academic Year",
+      time: "2 days ago",
     },
   ];
 
   const upcomingEvents = [
-    { 
-      event: "Registration Deadline", 
+    {
+      event: "Registration Deadline",
       date: "March 15, 2024 - 3 days left",
       status: "urgent",
-      icon: EventNoteIcon 
+      icon: EventNoteIcon,
     },
-    { 
-      event: "Semester Exams", 
+    {
+      event: "Semester Exams",
       date: "April 15, 2024 - 18 days left",
       status: "upcoming",
-      icon: AssignmentIcon 
+      icon: AssignmentIcon,
     },
-    { 
-      event: "Faculty Meeting", 
+    {
+      event: "Faculty Meeting",
       date: "March 20, 2024 - 8 days left",
       status: "scheduled",
-      icon: PeopleIcon 
+      icon: PeopleIcon,
     },
   ];
 
@@ -158,12 +181,22 @@ function DashboardOverview({ user }) {
     return () => timers.forEach((t) => clearTimeout(t));
   }, []);
 
+  if (loading) {
+    return (
+      <Box className="loading-container">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <div className="dashboard-overview">
       {/* Welcome Header */}
       <div className="welcome-banner">
         <div className="welcome-content">
-          <h1>Welcome back, {user?.full_name || 'System Administrator'}! 👋</h1>
+          <h1>
+            Welcome back, {user?.full_name || "System Administrator"}! 👋
+          </h1>
           <p>Here's what's happening in your academic portal today.</p>
         </div>
         <button className="view-reports-btn">View Reports</button>
@@ -171,10 +204,14 @@ function DashboardOverview({ user }) {
 
       {/* Stats Cards */}
       <div className="stats-grid">
-        {stats.map((stat, idx) => {
+        {statCards.map((stat, idx) => {
           const IconComponent = stat.icon;
           return (
-            <div className="stat-card" key={idx} style={{ background: stat.bgGradient }}>
+            <div
+              className="stat-card"
+              key={idx}
+              style={{ background: stat.bgGradient }}
+            >
               <div className="stat-icon">
                 <IconComponent />
               </div>
@@ -200,11 +237,11 @@ function DashboardOverview({ user }) {
           <div className="activities-list">
             {recentActivities.map((activity, i) => (
               <div className="activity-item" key={i}>
-                <div 
-                  className="activity-avatar" 
-                  style={{ 
+                <div
+                  className="activity-avatar"
+                  style={{
                     background: activity.bgColor,
-                    color: activity.textColor 
+                    color: activity.textColor,
                   }}
                 >
                   {activity.initials}
@@ -258,11 +295,11 @@ function DashboardOverview({ user }) {
                     <span className="status-value">{progress[i]}%</span>
                   </div>
                   <div className="status-bar">
-                    <div 
-                      className="status-progress" 
-                      style={{ 
+                    <div
+                      className="status-progress"
+                      style={{
                         width: `${progress[i]}%`,
-                        backgroundColor: status.color 
+                        backgroundColor: status.color,
                       }}
                     />
                   </div>
@@ -276,6 +313,7 @@ function DashboardOverview({ user }) {
   );
 }
 
+// =============== MAIN DASHBOARD COMPONENT ===============
 function Dashboard() {
   const [user, setUser] = useState(null);
   const [activeMenu, setActiveMenu] = useState("Dashboard");
@@ -295,43 +333,34 @@ function Dashboard() {
   // Detect current route and set active menu
   useEffect(() => {
     const path = window.location.pathname;
-    if (path === '/users') {
-      setActiveMenu('Users');
-    } else if (path === '/dashboard') {
-      setActiveMenu('Dashboard');
+    if (path === "/users") {
+      setActiveMenu("Users");
+    } else if (path === "/dashboard") {
+      setActiveMenu("Dashboard");
     }
   }, []);
 
-  // Handle Logout
   const handleLogout = async () => {
     try {
-      await axios.post('/logout');
+      await axios.post("/logout");
       localStorage.removeItem("user");
-      window.location.href = '/login';
+      window.location.href = "/login";
     } catch (error) {
-      console.error('Logout error:', error);
-      // Even if the request fails, clear local storage and redirect
+      console.error("Logout error:", error);
       localStorage.removeItem("user");
-      window.location.href = '/login';
+      window.location.href = "/login";
     }
   };
 
-  // Handle Avatar Click
   const handleAvatarClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleMenuClose = () => setAnchorEl(null);
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  // Handle Settings
   const handleSettings = () => {
     handleMenuClose();
     alert("Settings feature coming soon!");
   };
-
-  // Handle Help
   const handleHelp = () => {
     handleMenuClose();
     alert("Help & Support feature coming soon!");
@@ -347,9 +376,9 @@ function Dashboard() {
   const mainMenuItems = [
     { label: "Dashboard", subtitle: "Overview & Analytics", icon: DashboardIcon, route: "/dashboard" },
     { label: "Users", subtitle: "User Management", icon: PeopleIcon, route: "/users" },
-    { label: "Students", subtitle: "Student Records", icon: SchoolIcon, route: null },
-    { label: "Faculty", subtitle: "Faculty Management", icon: PersonIcon, route: null },
-    { label: "Courses", subtitle: "Course Catalog", icon: AssignmentIcon, route: null },
+    { label: "Students", subtitle: "Student Records", icon: SchoolIcon, route: "/students" },
+    { label: "Faculty", subtitle: "Faculty Management", icon: PersonIcon, route: "/faculty" },
+    { label: "Courses", subtitle: "Course Catalog", icon: AssignmentIcon, route: "/courses" },
     { label: "Academic Years", subtitle: "Academic Periods", icon: CalendarMonthIcon, route: null },
     { label: "Departments", subtitle: "Department Structure", icon: BusinessIcon, route: null },
   ];
@@ -357,15 +386,15 @@ function Dashboard() {
   return (
     <Box className="dashboard-layout">
       {/* Sidebar */}
-      <Drawer 
-        variant="permanent" 
+      <Drawer
+        variant="permanent"
         className="sidebar"
-        sx={{ 
+        sx={{
           width: drawerWidth,
-          '& .MuiDrawer-paper': { width: drawerWidth, boxSizing: 'border-box' }
+          "& .MuiDrawer-paper": { width: drawerWidth, boxSizing: "border-box" },
         }}
       >
-        <div className="sidebar-header" onClick={() => window.location.href = '/dashboard'} style={{ cursor: 'pointer' }}>
+        <div className="sidebar-header" onClick={() => (window.location.href = "/dashboard")} style={{ cursor: "pointer" }}>
           <div className="logo-container">
             <div className="logo-icon">E</div>
             <div className="logo-text">
@@ -384,25 +413,22 @@ function Dashboard() {
               const IconComponent = item.icon;
               return (
                 <ListItem key={item.label} disablePadding>
-                  <ListItemButton 
-                    selected={activeMenu === item.label} 
+                  <ListItemButton
+                    selected={activeMenu === item.label}
                     onClick={() => {
-                      if (item.route) {
-                        window.location.href = item.route;
-                      } else {
-                        setActiveMenu(item.label);
-                      }
+                      if (item.route) window.location.href = item.route;
+                      else setActiveMenu(item.label);
                     }}
                     className="sidebar-menu-item"
                   >
                     <ListItemIcon className="menu-icon">
                       <IconComponent />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary={item.label}
                       secondary={item.subtitle}
-                      primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: 500 }}
-                      secondaryTypographyProps={{ fontSize: '0.75rem' }}
+                      primaryTypographyProps={{ fontSize: "0.9rem", fontWeight: 500 }}
+                      secondaryTypographyProps={{ fontSize: "0.75rem" }}
                     />
                   </ListItemButton>
                 </ListItem>
@@ -412,57 +438,46 @@ function Dashboard() {
         </div>
 
         <div style={{ flex: 1 }} />
-        
+
         <div className="sidebar-footer">
           <Divider />
           <div className="footer-links">
             <button className="footer-link" onClick={handleSettings}>
-              <SettingsIcon style={{ fontSize: '1rem', marginRight: '4px' }} />
+              <SettingsIcon style={{ fontSize: "1rem", marginRight: "4px" }} />
               Settings
             </button>
             <span className="footer-divider">·</span>
             <button className="footer-link" onClick={handleHelp}>
-              <HelpIcon style={{ fontSize: '1rem', marginRight: '4px' }} />
+              <HelpIcon style={{ fontSize: "1rem", marginRight: "4px" }} />
               Help
             </button>
           </div>
         </div>
       </Drawer>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <Box className="main-content-wrapper">
-        {/* Top App Bar */}
         <AppBar position="fixed" className="top-appbar" elevation={0}>
           <Toolbar>
             <IconButton className="mobile-menu-btn" onClick={() => setMobileOpen(!mobileOpen)}>
               <MenuIcon />
             </IconButton>
-            
             <Typography variant="h6" className="page-title">
               {activeMenu}
             </Typography>
-
             <div style={{ flexGrow: 1 }} />
-
-            <Chip 
-              label={user.role || "admin"} 
-              size="small" 
-              className="user-role-chip"
-            />
-
+            <Chip label={user.role || "admin"} size="small" className="user-role-chip" />
             <IconButton className="notification-btn">
               <Badge badgeContent={4} color="error">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-
             <IconButton onClick={handleAvatarClick}>
               <Avatar className="user-avatar">
                 {user.full_name ? user.full_name.charAt(0) : "U"}
               </Avatar>
             </IconButton>
 
-            {/* User Menu */}
             <Menu
               anchorEl={anchorEl}
               open={open}
@@ -471,61 +486,50 @@ function Dashboard() {
               PaperProps={{
                 elevation: 3,
                 sx: {
-                  overflow: 'visible',
-                  filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.1))',
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.1))",
                   mt: 1.5,
                   minWidth: 200,
-                  '& .MuiAvatar-root': {
-                    width: 32,
-                    height: 32,
-                    ml: -0.5,
-                    mr: 1,
-                  },
+                  "& .MuiAvatar-root": { width: 32, height: 32, ml: -0.5, mr: 1 },
                 },
               }}
-              transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-              anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
               <MenuItem disabled>
-                <Avatar sx={{ bgcolor: '#4f46e5' }}>
+                <Avatar sx={{ bgcolor: "#4f46e5" }}>
                   {user.full_name ? user.full_name.charAt(0) : "U"}
                 </Avatar>
-                <div style={{ marginLeft: '8px' }}>
-                  <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{user.full_name || "User"}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{user.email || "user@example.com"}</div>
+                <div style={{ marginLeft: "8px" }}>
+                  <div style={{ fontWeight: 600, fontSize: "0.875rem" }}>
+                    {user.full_name || "User"}
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "#6b7280" }}>
+                    {user.email || "user@example.com"}
+                  </div>
                 </div>
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleSettings}>
-                <SettingsIcon fontSize="small" style={{ marginRight: '12px', color: '#6b7280' }} />
+                <SettingsIcon fontSize="small" style={{ marginRight: "12px", color: "#6b7280" }} />
                 Settings
               </MenuItem>
               <MenuItem onClick={handleHelp}>
-                <HelpIcon fontSize="small" style={{ marginRight: '12px', color: '#6b7280' }} />
+                <HelpIcon fontSize="small" style={{ marginRight: "12px", color: "#6b7280" }} />
                 Help & Support
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleLogout}>
-                <LogoutIcon fontSize="small" style={{ marginRight: '12px', color: '#ef4444' }} />
-                <span style={{ color: '#ef4444', fontWeight: 600 }}>Logout</span>
+                <LogoutIcon fontSize="small" style={{ marginRight: "12px", color: "#ef4444" }} />
+                <span style={{ color: "#ef4444", fontWeight: 600 }}>Logout</span>
               </MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>
 
-        {/* Page Content */}
         <Box className="page-content">
           <Toolbar />
           {activeMenu === "Dashboard" && <DashboardOverview user={user} />}
-          {activeMenu === "Users" && <Users />}
-          {activeMenu !== "Dashboard" && activeMenu !== "Users" && (
-            <Box sx={{ p: 3 }}>
-              <div className="coming-soon">
-                <h2>"{activeMenu}" Section</h2>
-                <p>This section is currently under development.</p>
-              </div>
-            </Box>
-          )}
         </Box>
       </Box>
     </Box>

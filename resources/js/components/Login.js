@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import "../../sass/Login.scss";
 
 function Login() {
@@ -8,12 +7,13 @@ function Login() {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setError("");
 
-        // Validation
         if (!username.trim() || !password) {
             setError("Please enter both username and password");
             return;
@@ -22,165 +22,162 @@ function Login() {
         setIsLoading(true);
 
         try {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            await new Promise((resolve) => setTimeout(resolve, 1000));
 
-            const response = await axios.post("/api/login", 
-                { username: username.trim(), password },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken || "",
-                        "Accept": "application/json",
-                    }
-                }
-            );
+            const fakeUser = {
+                username: username.trim(),
+                role: "Guest",
+            };
 
-            if (response.data.success) {
-                sessionStorage.setItem("user", JSON.stringify(response.data.user));
-                window.location.href = response.data.redirect || "/dashboard";
-            } else {
-                setError(response.data.message || "Something went wrong. Try again.");
-                setIsLoading(false);
-            }
+            sessionStorage.setItem("user", JSON.stringify(fakeUser));
+            window.location.href = "/dashboard";
         } catch (err) {
             console.error("Login error:", err);
-            setError(
-                err.response?.data?.message || "Something went wrong. Try again."
-            );
+            setError("Something went wrong. Try again.");
+        } finally {
             setIsLoading(false);
         }
     };
 
-    const fillCredentials = (user, pass) => {
-        setUsername(user);
-        setPassword(pass);
+    const openModal = () => {
+        setShowModal(true);
+        setError("");
+        setUsername("");
+        setPassword("");
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
         setError("");
     };
 
     return (
-        <>
-            <div className="pattern-bg"></div>
-
-            <div className="login-wrapper">
-                {/* Branding Side */}
-                <div className="login-branding">
-                    <h1>EduPortal</h1>
-                    <p>Modern Academic Management System for Educational Institutions.</p>
-
-                    <div className="feature">
-                        <div className="feature-icon">📊</div>
-                        <div>
-                            <h3>Comprehensive Dashboard</h3>
-                            <p>Real-time analytics and insights at your fingertips.</p>
-                        </div>
+        <div className="login-page">
+            {/* Header */}
+            <header className="header">
+                <div className="header-content">
+                    <div className="logo-section">
+                        <div className="logo">🎓</div>
+                        <span className="university-name">Father Saturnino Urios University</span>
                     </div>
+                    <nav className="nav-links">
+                        <a href="#calendar">Calendar</a>
+                        <a href="#contact">Contact</a>
+                        <a href="#about">About us</a>
+                        <a href="#website">FSUU Website</a>
+                        <a href="#gsuite">FSUU G-Suite</a>
+                        <button className="nav-login-btn" onClick={openModal}>Log in</button>
+                    </nav>
+                </div>
+            </header>
 
-                    <div className="feature">
-                        <div className="feature-icon">👥</div>
-                        <div>
-                            <h3>User Management</h3>
-                            <p>Manage students, faculty, and staff efficiently.</p>
-                        </div>
-                    </div>
-
-                    <div className="feature">
-                        <div className="feature-icon">🔒</div>
-                        <div>
-                            <h3>Secure & Reliable</h3>
-                            <p>Enterprise-grade security for your data.</p>
-                        </div>
+            {/* Hero Section */}
+            <section className="hero">
+                <div className="hero-overlay">
+                    <div className="hero-text">
+                        <h1>Easy and enjoyable</h1>
+                        <p>
+                            NEO has a beautiful and intuitive<br />
+                            user interface that will make your<br />
+                            learning easy and enjoyable.
+                        </p>
                     </div>
                 </div>
+            </section>
 
-                {/* Login Card */}
-                <div className="login-card">
-                    <div className="login-card-header">
-                        <div className="login-icon">🎓</div>
-                        <h2>Welcome Back</h2>
-                        <p>Sign in to access your dashboard</p>
+            {/* Image Cards */}
+            <section className="cards">
+                <div className="cards-container">
+                    <div className="card">
+                        <img 
+                            src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop" 
+                            alt="Students studying together" 
+                        />
                     </div>
+                    <div className="card">
+                        <img 
+                            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=300&fit=crop" 
+                            alt="Group collaboration" 
+                        />
+                    </div>
+                    <div className="card">
+                        <img 
+                            src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&h=300&fit=crop" 
+                            alt="Student learning" 
+                        />
+                    </div>
+                </div>
+            </section>
 
-                    <form className="login-form" onSubmit={handleLogin}>
-                        {error && <div className="error">{error}</div>}
+            {/* Login Modal */}
+            {showModal && (
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <button className="close-btn" onClick={closeModal}>×</button>
+                        
+                        <div className="login-card">
+                            <h2>Log in</h2>
+                            
+                            <form onSubmit={handleLogin}>
+                                {error && <div className="error-alert">{error}</div>}
 
-                        <div className="input-group">
-                            <label htmlFor="username">Email or Username *</label>
-                            <div className="input-wrapper">
-                                <span className="input-icon">✉️</span>
-                                <input
-                                    id="username"
-                                    type="text"
-                                    placeholder=""
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)}
-                                    disabled={isLoading}
-                                    required
-                                />
-                            </div>
-                        </div>
+                                <div className="form-group">
+                                    <label htmlFor="username">Username</label>
+                                    <input
+                                        id="username"
+                                        type="text"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        disabled={isLoading}
+                                        placeholder="Enter your username"
+                                        required
+                                    />
+                                </div>
 
-                        <div className="input-group">
-                            <label htmlFor="password">Password *</label>
-                            <div className="input-wrapper">
-                                <span className="input-icon">🔒</span>
-                                <input
-                                    id="password"
-                                    type={showPassword ? "text" : "password"}
-                                    placeholder=""
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    disabled={isLoading}
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    className="toggle-password"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    tabIndex="-1"
-                                >
-                                    {showPassword ? "👁️" : "👁️‍🗨️"}
+                                <div className="form-group">
+                                    <label htmlFor="password">Password</label>
+                                    <div className="password-input">
+                                        <input
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            disabled={isLoading}
+                                            placeholder="Enter your password"
+                                            required
+                                        />
+                                        <button
+                                            type="button"
+                                            className="toggle-btn"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            tabIndex="-1"
+                                        >
+                                            {showPassword ? "👁️" : "👁️‍🗨️"}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="form-options">
+                                    <label className="remember">
+                                        <input
+                                            type="checkbox"
+                                            checked={rememberMe}
+                                            onChange={(e) => setRememberMe(e.target.checked)}
+                                        />
+                                        <span>Remember me</span>
+                                    </label>
+                                    <a href="#forgot" className="forgot">Forgot password?</a>
+                                </div>
+
+                                <button type="submit" className="submit-btn" disabled={isLoading}>
+                                    {isLoading ? "Logging in..." : "Log in"}
                                 </button>
-                            </div>
+                            </form>
                         </div>
-
-                        <button type="submit" className="sign-in-btn" disabled={isLoading}>
-                            {isLoading ? "SIGNING IN..." : "SIGN IN"}
-                        </button>
-
-                        <div className="divider">
-                            <span>Or continue with</span>
-                        </div>
-
-                        <div className="social-buttons">
-                            <button type="button" className="social-btn google-btn" disabled>
-                                <span className="social-icon">G</span>
-                                GOOGLE
-                            </button>
-                            <button type="button" className="social-btn microsoft-btn" disabled>
-                                <span className="social-icon">⊞</span>
-                                MICROSOFT
-                            </button>
-                        </div>
-
-                        <div className="demo-credentials">
-                            <div className="demo-header">Demo Credentials:</div>
-                            <div className="credential-item" onClick={() => fillCredentials("admin", "password")}>
-                                <span className="credential-icon">👤</span>
-                                <span className="credential-text">Admin: admin / password</span>
-                            </div>
-                            <div className="credential-item" onClick={() => fillCredentials("faculty1", "password")}>
-                                <span className="credential-icon">👨‍🏫</span>
-                                <span className="credential-text">Faculty: faculty1 / password</span>
-                            </div>
-                            <div className="credential-item" onClick={() => fillCredentials("student1", "password")}>
-                                <span className="credential-icon">👨‍🎓</span>
-                                <span className="credential-text">Student: student1 / password</span>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-        </>
+            )}
+        </div>
     );
 }
 
