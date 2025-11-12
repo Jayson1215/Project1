@@ -22,11 +22,20 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('guardian_name')->nullable();
             $table->string('guardian_phone')->nullable();
+
+            // ✅ Academic Year Foreign Key (clean version)
+            $table->foreignId('academic_year_id')
+                  ->nullable()
+                  ->constrained('academic_years')
+                  ->onDelete('cascade');
+
             $table->timestamps();
-            
+
+            // ✅ Indexes
             $table->index('department');
             $table->index('year_level');
             $table->index('status');
+            $table->index('academic_year_id');
         });
     }
 

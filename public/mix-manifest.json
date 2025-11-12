@@ -1,9 +1,13 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
+    "/css/Login.css": "/css/Login.css",
     "/css/users.css": "/css/users.css",
     "/css/dashboard.css": "/css/dashboard.css",
-    "/css/Login.css": "/css/Login.css",
     "/css/home.css": "/css/home.css",
+    "/css/academicyears.css": "/css/academicyears.css",
+    "/css/courses.css": "/css/courses.css",
+    "/css/departments.css": "/css/departments.css",
+    "/css/faculty.css": "/css/faculty.css",
     "/css/students.css": "/css/students.css"
 }

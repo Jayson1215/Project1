@@ -1,0 +1,700 @@
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  position: relative;
+}
+
+.MuiDrawer-paper {
+  background: #ffffff !important;
+  border-right: 1px solid #e9ecef !important;
+  box-shadow: none !important;
+  position: fixed !important;
+  height: 100vh !important;
+  overflow-y: auto !important;
+}
+.MuiDrawer-paper .sidebar-header {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+.MuiDrawer-paper .sidebar-header .logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.MuiDrawer-paper .sidebar-header .logo-container .logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+.MuiDrawer-paper .sidebar-header .logo-container .logo-text {
+  display: flex;
+  flex-direction: column;
+}
+.MuiDrawer-paper .sidebar-header .logo-container .logo-text .logo-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.MuiDrawer-paper .sidebar-header .logo-container .logo-text .logo-subtitle {
+  font-size: 0.7rem;
+  color: #6c757d;
+}
+.MuiDrawer-paper .sidebar-search {
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+.MuiDrawer-paper .sidebar-search .MuiTextField-root .MuiOutlinedInput-root {
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+.MuiDrawer-paper .sidebar-search .MuiTextField-root .MuiOutlinedInput-root fieldset {
+  border-color: transparent;
+}
+.MuiDrawer-paper .sidebar-search .MuiTextField-root .MuiOutlinedInput-root:hover fieldset {
+  border-color: #dee2e6;
+}
+.MuiDrawer-paper .sidebar-search .MuiTextField-root .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #adb5bd;
+  border-width: 1px;
+}
+.MuiDrawer-paper .sidebar-search .MuiTextField-root .MuiInputAdornment-root svg {
+  color: #adb5bd;
+  font-size: 1.125rem;
+}
+.MuiDrawer-paper .sidebar-section-title {
+  padding: 1rem 1rem 0.5rem 1rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #adb5bd;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.MuiDrawer-paper .MuiList-root {
+  padding: 0.5rem 0.75rem;
+}
+.MuiDrawer-paper .MuiListItemButton-root {
+  margin: 0.125rem 0;
+  border-radius: 8px;
+  padding: 0.625rem 0.875rem;
+  transition: all 0.2s;
+  min-height: 42px;
+}
+.MuiDrawer-paper .MuiListItemButton-root:hover {
+  background-color: #f8f9fa;
+}
+.MuiDrawer-paper .MuiListItemButton-root.selected {
+  background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%) !important;
+  color: white;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
+}
+.MuiDrawer-paper .MuiListItemButton-root.selected .MuiListItemIcon-root {
+  color: white;
+}
+.MuiDrawer-paper .MuiListItemButton-root.selected .MuiListItemText-primary {
+  color: white;
+  font-weight: 500;
+}
+.MuiDrawer-paper .MuiListItemButton-root.selected:hover {
+  background: linear-gradient(135deg, #db2777 0%, #e11d48 100%) !important;
+}
+.MuiDrawer-paper .MuiListItemButton-root .MuiListItemIcon-root {
+  min-width: 36px;
+  color: #6c757d;
+}
+.MuiDrawer-paper .MuiListItemButton-root .MuiListItemIcon-root svg {
+  font-size: 1.25rem;
+}
+.MuiDrawer-paper .MuiListItemButton-root .MuiListItemText-primary {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #495057;
+}
+
+.top-appbar {
+  background: white !important;
+  color: #1a1a1a !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid #e9ecef !important;
+  position: fixed !important;
+  left: 260px !important;
+  right: 0 !important;
+  top: 0 !important;
+  width: auto !important;
+  z-index: 1100 !important;
+}
+.top-appbar .MuiToolbar-root {
+  min-height: 64px;
+  padding: 0 2rem;
+}
+.top-appbar .breadcrumb {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.5rem;
+}
+.top-appbar .breadcrumb .page-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.3;
+  margin: 0;
+}
+.top-appbar .breadcrumb .page-subtitle {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: -2px;
+}
+.top-appbar .MuiChip-root {
+  margin-right: 0.75rem;
+  font-size: 0.75rem;
+  height: 26px;
+}
+.top-appbar .MuiIconButton-root {
+  margin-left: 0.5rem;
+  color: #495057;
+}
+.top-appbar .MuiIconButton-root:hover {
+  background-color: #f8f9fa;
+}
+.top-appbar .MuiAvatar-root {
+  width: 32px;
+  height: 32px;
+  font-size: 0.875rem;
+}
+
+.main-content-wrapper {
+  flex: 1;
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8f9fa;
+}
+
+.page-content {
+  flex: 1;
+  width: 100%;
+  padding-top: 64px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.courses-container {
+  flex: 1;
+  padding: 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.courses-container .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.courses-container .stats-grid .stat-card {
+  padding: 2rem 1.5rem;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.courses-container .stats-grid .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.courses-container .stats-grid .stat-card .stat-value {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+.courses-container .stats-grid .stat-card .stat-label {
+  font-size: 0.75rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+.courses-container .stats-grid .stat-card.total {
+  background: linear-gradient(135deg, #ff9966 0%, #ff6b6b 100%);
+}
+.courses-container .stats-grid .stat-card.active {
+  background: linear-gradient(135deg, #5dd39e 0%, #348f50 100%);
+}
+.courses-container .stats-grid .stat-card.inactive {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+.courses-container .stats-grid .stat-card.credits {
+  background: linear-gradient(135deg, #a55eea 0%, #8854d0 100%);
+}
+.courses-container .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.courses-container .page-header h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #5cb85c;
+  margin: 0;
+}
+.courses-container .page-header .header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+.courses-container .page-header .btn-primary, .courses-container .page-header .btn-secondary {
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.courses-container .page-header .btn-primary svg, .courses-container .page-header .btn-secondary svg {
+  font-size: 1rem;
+}
+.courses-container .page-header .btn-primary {
+  background: #4285f4;
+  color: white;
+  box-shadow: 0 1px 3px rgba(66, 133, 244, 0.3);
+}
+.courses-container .page-header .btn-primary:hover {
+  background: #3367d6;
+  box-shadow: 0 2px 6px rgba(66, 133, 244, 0.4);
+}
+.courses-container .page-header .btn-secondary {
+  background: white;
+  color: #4285f4;
+  border: 1px solid #dee2e6;
+}
+.courses-container .page-header .btn-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #4285f4;
+}
+.courses-container .filters-section {
+  background: white;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+  border: 1px solid #e9ecef;
+}
+.courses-container .filters-section .filters-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+.courses-container .filters-section .filters-grid .form-group.search-group .MuiTextField-root .MuiOutlinedInput-root {
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: white;
+}
+.courses-container .filters-section .filters-grid .form-group.search-group .MuiTextField-root .MuiOutlinedInput-root fieldset {
+  border-color: #dee2e6;
+}
+.courses-container .filters-section .filters-grid .form-group.search-group .MuiTextField-root .MuiOutlinedInput-root:hover fieldset {
+  border-color: #adb5bd;
+}
+.courses-container .filters-section .filters-grid .form-group.search-group .MuiTextField-root .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #4285f4;
+  border-width: 1px;
+}
+.courses-container .filters-section .filters-grid .form-group.search-group .MuiTextField-root .MuiInputAdornment-root svg {
+  color: #adb5bd;
+  font-size: 1.125rem;
+}
+.courses-container .filters-section .filters-grid .MuiFormControl-root .MuiOutlinedInput-root {
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+.courses-container .filters-section .filters-grid .MuiFormControl-root .MuiOutlinedInput-root fieldset {
+  border-color: #dee2e6;
+}
+.courses-container .filters-section .filters-grid .MuiFormControl-root .MuiOutlinedInput-root:hover fieldset {
+  border-color: #adb5bd;
+}
+.courses-container .filters-section .filters-grid .MuiFormControl-root .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #4285f4;
+  border-width: 1px;
+}
+.courses-container .filters-section .filters-grid .btn-filter {
+  background: white;
+  border: 1px solid #dee2e6;
+  color: #6c757d;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  height: 40px;
+}
+.courses-container .filters-section .filters-grid .btn-filter svg {
+  font-size: 1rem;
+}
+.courses-container .filters-section .filters-grid .btn-filter:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+  color: #495057;
+}
+.courses-container .no-data {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  color: #6c757d;
+  font-size: 0.875rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+}
+.courses-container .table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  flex: 1;
+}
+.courses-container .table-container table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.courses-container .table-container table thead {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+.courses-container .table-container table thead th {
+  padding: 0.875rem 1.25rem;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.courses-container .table-container table tbody tr {
+  border-bottom: 1px solid #f1f3f5;
+  transition: background-color 0.15s;
+}
+.courses-container .table-container table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+.courses-container .table-container table tbody tr:last-child {
+  border-bottom: none;
+}
+.courses-container .table-container table tbody tr td {
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
+  color: #495057;
+  vertical-align: middle;
+}
+.courses-container .table-container table tbody tr td .course-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.courses-container .table-container table tbody tr td .course-cell .course-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+.courses-container .table-container table tbody tr td .course-cell .course-icon svg {
+  font-size: 1.125rem;
+}
+.courses-container .table-container table tbody tr td .course-cell .course-name {
+  font-weight: 500;
+  color: #212529;
+}
+.courses-container .table-container table tbody tr td .course-code-badge {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  background: #f1f3f5;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: "Courier New", monospace;
+  color: #495057;
+}
+.courses-container .table-container table tbody tr td.description-cell {
+  max-width: 350px;
+  color: #6c757d;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+.courses-container .table-container table tbody tr td.actions {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+.courses-container .table-container table tbody tr td.actions .MuiIconButton-root {
+  padding: 0.375rem;
+}
+.courses-container .table-container table tbody tr td.actions .MuiIconButton-root svg {
+  font-size: 1.125rem;
+}
+.courses-container .table-container .status-badge {
+  display: inline-block;
+  padding: 0.3125rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.courses-container .table-container .status-badge.status-active {
+  background-color: #d4edda;
+  color: #155724;
+}
+.courses-container .table-container .status-badge.status-inactive {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+.courses-container .pagination-container {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+  padding: 0.875rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.courses-container .pagination-container .pagination-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8125rem;
+  color: #6c757d;
+}
+.courses-container .pagination-container .pagination-info .rows-select {
+  margin-left: 0.5rem;
+}
+.courses-container .pagination-container .pagination-info .rows-select .MuiSelect-select {
+  padding: 0.25rem 1.75rem 0.25rem 0.625rem;
+  font-size: 0.8125rem;
+  border-radius: 4px;
+}
+.courses-container .pagination-container .pagination-info .rows-select fieldset {
+  border-color: #dee2e6;
+}
+.courses-container .pagination-container .pagination-info .rows-select:hover fieldset {
+  border-color: #adb5bd;
+}
+.courses-container .pagination-container .pagination-info .page-range {
+  margin-left: 0.75rem;
+}
+.courses-container .pagination-container .pagination-controls {
+  display: flex;
+  gap: 0.375rem;
+}
+.courses-container .pagination-container .pagination-controls .MuiIconButton-root {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 0.375rem;
+}
+.courses-container .pagination-container .pagination-controls .MuiIconButton-root svg {
+  font-size: 1.125rem;
+}
+.courses-container .pagination-container .pagination-controls .MuiIconButton-root:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+}
+.courses-container .pagination-container .pagination-controls .MuiIconButton-root:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.courses-container .loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  flex: 1;
+  min-height: 400px;
+}
+.courses-container .loading-state p {
+  margin-top: 1rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.modal-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.75rem;
+  width: 90%;
+  max-width: 560px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-box h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #212529;
+}
+.modal-box .MuiTextField-root .MuiOutlinedInput-root, .modal-box .MuiFormControl-root .MuiOutlinedInput-root {
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+.modal-box .MuiTextField-root .MuiOutlinedInput-root fieldset, .modal-box .MuiFormControl-root .MuiOutlinedInput-root fieldset {
+  border-color: #dee2e6;
+}
+.modal-box .MuiTextField-root .MuiOutlinedInput-root:hover fieldset, .modal-box .MuiFormControl-root .MuiOutlinedInput-root:hover fieldset {
+  border-color: #adb5bd;
+}
+.modal-box .MuiTextField-root .MuiOutlinedInput-root.Mui-focused fieldset, .modal-box .MuiFormControl-root .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: #4285f4;
+  border-width: 1px;
+}
+.modal-box .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+.modal-box .modal-actions .MuiButton-root {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-radius: 6px;
+}
+.modal-box .modal-actions .MuiButton-outlined {
+  border-color: #dee2e6;
+  color: #6c757d;
+}
+.modal-box .modal-actions .MuiButton-outlined:hover {
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+}
+.modal-box .modal-actions .MuiButton-contained {
+  background: #4285f4;
+  box-shadow: 0 1px 3px rgba(66, 133, 244, 0.3);
+}
+.modal-box .modal-actions .MuiButton-contained:hover {
+  background: #3367d6;
+  box-shadow: 0 2px 6px rgba(66, 133, 244, 0.4);
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+@media (max-width: 1200px) {
+  .courses-container .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .top-appbar {
+    left: 0 !important;
+    width: 100% !important;
+  }
+  .main-content-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+  .courses-container {
+    padding: 1rem;
+  }
+  .courses-container .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
+  }
+  .courses-container .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .courses-container .page-header .header-actions {
+    width: 100%;
+  }
+  .courses-container .page-header .header-actions button {
+    flex: 1;
+  }
+  .courses-container .filters-section .filters-grid {
+    grid-template-columns: 1fr;
+  }
+  .courses-container .table-container {
+    overflow-x: auto;
+  }
+  .courses-container .table-container table {
+    min-width: 800px;
+  }
+  .courses-container .pagination-container {
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+  .modal-box {
+    width: 95%;
+    padding: 1.25rem;
+  }
+}
+.MuiDrawer-paper::-webkit-scrollbar {
+  width: 5px;
+}
+.MuiDrawer-paper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.MuiDrawer-paper::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 3px;
+}
+.MuiDrawer-paper::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}

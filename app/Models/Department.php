@@ -20,6 +20,11 @@ class Department extends Model
         'status',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     // Relationships
     public function headFaculty()
     {
@@ -28,16 +33,16 @@ class Department extends Model
 
     public function students()
     {
-        return $this->hasMany(Student::class);
+        return $this->hasMany(Student::class, 'department_id');
     }
 
     public function faculty()
     {
-        return $this->hasMany(Faculty::class);
+        return $this->hasMany(Faculty::class, 'department_id');
     }
 
     public function courses()
     {
-        return $this->hasMany(Course::class);
+        return $this->hasMany(Course::class, 'department_id');
     }
 }

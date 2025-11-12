@@ -1,0 +1,595 @@
+.departments-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+}
+.departments-layout .sidebar {
+  background: white;
+  border-right: 1px solid #e5e7eb;
+}
+.departments-layout .sidebar .sidebar-header {
+  padding: 1.5rem;
+  cursor: pointer;
+  border-bottom: 1px solid #e5e7eb;
+}
+.departments-layout .sidebar .sidebar-header .logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.departments-layout .sidebar .sidebar-header .logo-container .logo-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.departments-layout .sidebar .sidebar-header .logo-container .logo-text {
+  display: flex;
+  flex-direction: column;
+}
+.departments-layout .sidebar .sidebar-header .logo-container .logo-text .logo-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+.departments-layout .sidebar .sidebar-header .logo-container .logo-text .logo-subtitle {
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.2;
+}
+.departments-layout .sidebar .sidebar-search {
+  padding: 1rem;
+  position: relative;
+  border-bottom: 1px solid #e5e7eb;
+}
+.departments-layout .sidebar .sidebar-search .search-icon {
+  position: absolute;
+  left: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 1.125rem;
+}
+.departments-layout .sidebar .sidebar-search input {
+  width: 100%;
+  padding: 0.625rem 0.875rem 0.625rem 2.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: #f9fafb;
+  transition: all 0.2s;
+}
+.departments-layout .sidebar .sidebar-search input:focus {
+  outline: none;
+  background: white;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+.departments-layout .sidebar .sidebar-search input::-moz-placeholder {
+  color: #9ca3af;
+}
+.departments-layout .sidebar .sidebar-search input::placeholder {
+  color: #9ca3af;
+}
+.departments-layout .sidebar .sidebar-section {
+  padding: 1rem 0;
+}
+.departments-layout .sidebar .sidebar-section .section-label {
+  padding: 0.5rem 1.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.departments-layout .sidebar .sidebar-section .sidebar-menu-item {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0;
+  transition: all 0.2s;
+}
+.departments-layout .sidebar .sidebar-section .sidebar-menu-item:hover {
+  background-color: #f9fafb;
+}
+.departments-layout .sidebar .sidebar-section .sidebar-menu-item.Mui-selected {
+  background-color: #eef2ff;
+  border-right: 3px solid #4f46e5;
+}
+.departments-layout .sidebar .sidebar-section .sidebar-menu-item.Mui-selected .menu-icon {
+  color: #4f46e5;
+}
+.departments-layout .sidebar .sidebar-section .sidebar-menu-item.Mui-selected .MuiListItemText-primary {
+  color: #4f46e5;
+  font-weight: 600;
+}
+.departments-layout .sidebar .sidebar-section .sidebar-menu-item .menu-icon {
+  min-width: 40px;
+  color: #6b7280;
+}
+.departments-layout .sidebar .sidebar-section .sidebar-menu-item .menu-icon svg {
+  font-size: 1.25rem;
+}
+.departments-layout .sidebar .sidebar-footer {
+  padding: 1rem;
+  margin-top: auto;
+}
+.departments-layout .sidebar .sidebar-footer .footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+.departments-layout .sidebar .sidebar-footer .footer-links .footer-link {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  transition: color 0.2s;
+}
+.departments-layout .sidebar .sidebar-footer .footer-links .footer-link:hover {
+  color: #4f46e5;
+}
+.departments-layout .sidebar .sidebar-footer .footer-links .footer-divider {
+  color: #d1d5db;
+}
+.departments-layout .main-content-wrapper {
+  flex: 1;
+  margin-left: 260px;
+}
+.departments-layout .main-content-wrapper .top-appbar {
+  background: white;
+  color: #1a1a1a;
+  border-bottom: 1px solid #e5e7eb;
+  left: 260px;
+}
+.departments-layout .main-content-wrapper .top-appbar .page-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.departments-layout .main-content-wrapper .top-appbar .page-subtitle {
+  margin-left: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+.departments-layout .main-content-wrapper .top-appbar .user-role-chip {
+  background-color: #dbeafe;
+  color: #1e40af;
+  font-weight: 600;
+  font-size: 0.75rem;
+  margin-right: 0.75rem;
+}
+.departments-layout .main-content-wrapper .top-appbar .notification-btn {
+  margin-right: 0.5rem;
+  color: #6b7280;
+}
+.departments-layout .main-content-wrapper .top-appbar .user-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.departments-layout .main-content-wrapper .page-content {
+  padding: 2rem;
+  max-width: 100%;
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid .stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid .stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid .stat-card:nth-child(1) {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid .stat-card:nth-child(2) {
+  background: linear-gradient(135deg, #d1fae5 0%, #86efac 100%);
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid .stat-card:nth-child(3) {
+  background: linear-gradient(135deg, #dbeafe 0%, #7dd3fc 100%);
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid .stat-card:nth-child(4) {
+  background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid .stat-card .stat-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.25rem;
+}
+.departments-layout .main-content-wrapper .page-content .stats-grid .stat-card .stat-label {
+  font-size: 0.875rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+.departments-layout .main-content-wrapper .page-content .management-section {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions {
+  display: flex;
+  gap: 1rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions .btn-export {
+  background: white;
+  color: #4f46e5;
+  border: 1px solid #e5e7eb;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions .btn-export svg {
+  font-size: 1rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions .btn-export:hover {
+  background-color: #f9fafb;
+  border-color: #4f46e5;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions .btn-add {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  padding: 0.625rem 1.25rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions .btn-add svg {
+  font-size: 1rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions .btn-add:hover {
+  background: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar {
+  padding: 1rem 1.5rem;
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .search-box {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .search-box svg {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 1.125rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .search-box input {
+  width: 100%;
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: white;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .search-box input:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .search-box input::-moz-placeholder {
+  color: #9ca3af;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .search-box input::placeholder {
+  color: #9ca3af;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .filter-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .filter-actions .status-filter {
+  padding: 0.625rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: white;
+  cursor: pointer;
+  color: #6b7280;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .filter-actions .status-filter:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .filter-actions .btn-more-filters {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 0.625rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .filters-bar .filter-actions .btn-more-filters:hover {
+  background-color: #f9fafb;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper {
+  overflow-x: auto;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table thead {
+  background-color: #f9fafb;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table thead th {
+  padding: 0.875rem 1.5rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.15s;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td {
+  padding: 1rem 1.5rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .dept-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .dept-info .dept-icon {
+  color: #4f46e5;
+  background: #eef2ff;
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 1.125rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .head-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .head-info svg {
+  color: #9ca3af;
+  font-size: 1rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .students-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .students-info svg {
+  color: #4f46e5;
+  font-size: 1rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .status-badge.status-active {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .status-badge.status-inactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .actions {
+  display: flex;
+  gap: 0.25rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .actions .btn-icon {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .actions .btn-icon svg {
+  font-size: 1rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .actions .btn-icon.btn-edit:hover {
+  background-color: #eef2ff;
+  color: #4f46e5;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .actions .btn-icon.btn-delete:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table tbody tr td .actions .btn-icon:not(.btn-edit):not(.btn-delete):hover {
+  background-color: #f3f4f6;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .rows-per-page {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .rows-per-page select {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background: white;
+  cursor: pointer;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .rows-per-page select:focus {
+  outline: none;
+  border-color: #4f46e5;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .pagination {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .pagination .pagination-info {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .pagination .pagination-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .pagination .pagination-controls .pagination-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  color: #6b7280;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .pagination .pagination-controls .pagination-btn:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #4f46e5;
+  color: #4f46e5;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .pagination .pagination-controls .pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.departments-layout .main-content-wrapper .page-content .management-section .table-footer .pagination .pagination-controls .pagination-btn svg {
+  font-size: 1.125rem;
+}
+
+@media (max-width: 1024px) {
+  .departments-layout .main-content-wrapper .page-content {
+    padding: 1rem;
+  }
+  .departments-layout .main-content-wrapper .page-content .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 768px) {
+  .departments-layout .main-content-wrapper {
+    margin-left: 0;
+  }
+  .departments-layout .main-content-wrapper .top-appbar {
+    left: 0;
+  }
+  .departments-layout .main-content-wrapper .page-content .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions {
+    width: 100%;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions .btn-export,
+  .departments-layout .main-content-wrapper .page-content .management-section .section-header .header-actions .btn-add {
+    flex: 1;
+    justify-content: center;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .filters-bar .search-box {
+    max-width: 100%;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .filters-bar .filter-actions {
+    justify-content: space-between;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .table-wrapper {
+    overflow-x: scroll;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .table-wrapper .departments-table {
+    min-width: 800px;
+  }
+  .departments-layout .main-content-wrapper .page-content .management-section .table-footer {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+}

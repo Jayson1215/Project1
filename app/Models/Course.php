@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Department; // ✅ ensure this line exists
 
 class Course extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'course_code',
         'course_name',
@@ -22,15 +18,14 @@ class Course extends Model
         'status',
     ];
 
-    // Relationships
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
-
     public function faculty()
     {
-        return $this->belongsTo(Faculty::class);
+        return $this->belongsTo(\App\Models\Faculty::class, 'faculty_id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(\App\Models\Department::class, 'department_id');
     }
 
     public function students()

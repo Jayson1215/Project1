@@ -3,61 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only(['username', 'password']);
+        // Validate input
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        // Demo users database
-        $users = [
-            'admin' => [
-                'password' => 'password',
-                'user' => [
-                    'id' => 1,
-                    'full_name' => 'System Administrator',
-                    'role' => 'admin',
-                    'email' => 'admin@eduportal.com'
-                ]
-            ],
-            'faculty1' => [
-                'password' => 'password',
-                'user' => [
-                    'id' => 2,
-                    'full_name' => 'Dr. John Smith',
-                    'role' => 'faculty',
-                    'email' => 'faculty1@eduportal.com',
-                    'department' => 'Computer Science'
-                ]
-            ],
-            'student1' => [
-                'password' => 'password',
-                'user' => [
-                    'id' => 3,
-                    'full_name' => 'Jane Doe',
-                    'role' => 'student',
-                    'email' => 'student1@eduportal.com',
-                    'student_id' => 'STU2024001'
-                ]
-            ]
-        ];
+        // Find user by email
+        $user = User::where('email', $request->email)->first();
 
-        // Check credentials
-        $username = $credentials['username'] ?? '';
-        $password = $credentials['password'] ?? '';
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user);
 
-        if (isset($users[$username]) && $users[$username]['password'] === $password) {
             return response()->json([
                 'success' => true,
-                'user' => $users[$username]['user'],
+                'user' => [
+                    'id' => $user->id,
+                    'full_name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role ?? 'student'
+                ],
                 'redirect' => '/dashboard'
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Invalid username or password'
+            'message' => 'Invalid email or password',
         ], 401);
     }
 }

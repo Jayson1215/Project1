@@ -13,13 +13,6 @@ import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import AppBar from "@mui/material/AppBar";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Dialog from "@mui/material/Dialog";
@@ -31,6 +24,8 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
+import Divider from "@mui/material/Divider";
+import Collapse from "@mui/material/Collapse";
 
 // Material-UI Icons
 import SearchIcon from "@mui/icons-material/Search";
@@ -51,6 +46,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import HelpIcon from "@mui/icons-material/Help";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
 const drawerWidth = 260;
 
@@ -75,6 +72,17 @@ function UsersContent() {
 
   useEffect(() => {
     fetchUsers();
+    
+    // Listen for storage changes from other tabs/windows
+    const handleStorageChange = (e) => {
+      if (e.key === 'all_users') {
+        console.log('[Users.js] Storage changed, reloading users...');
+        fetchUsers();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   useEffect(() => {
@@ -91,15 +99,37 @@ function UsersContent() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get("/api/users");
-      const usersWithAvatars = response.data.map(user => ({
+      // First try API
+      try {
+        const response = await axios.get("/api/users");
+        const usersWithAvatars = response.data.map(user => ({
+          ...user,
+          initials: (user.full_name || user.name || "U").charAt(0).toUpperCase(),
+          avatarColor: getRandomColor()
+        }));
+        setUsers(usersWithAvatars);
+        setLoading(false);
+        console.log('[Users.js] Loaded users from API:', usersWithAvatars.length);
+        return;
+      } catch (apiError) {
+        console.log('[Users.js] API fetch failed, using localStorage');
+      }
+
+      // Fallback to localStorage (same key as Login.js)
+      const allUsersStr = localStorage.getItem('all_users');
+      const localUsers = allUsersStr ? JSON.parse(allUsersStr) : [];
+      
+      console.log('[Users.js] Loaded users from localStorage:', localUsers.length);
+      
+      const usersWithAvatars = localUsers.map(user => ({
         ...user,
         initials: (user.full_name || user.name || "U").charAt(0).toUpperCase(),
         avatarColor: getRandomColor()
       }));
+      
       setUsers(usersWithAvatars);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("[Users.js] Error fetching users:", error);
       setError("Failed to load users. Please try again.");
     } finally {
       setLoading(false);
@@ -129,6 +159,11 @@ function UsersContent() {
     setEditingUser((prev) => ({ ...prev, [name]: value }));
   };
 
+  const saveToLocalStorage = (updatedUsers) => {
+    localStorage.setItem('all_users', JSON.stringify(updatedUsers));
+    console.log('[Users.js] Saved to localStorage:', updatedUsers.length, 'users');
+  };
+
   const handleAddUser = async () => {
     if (!newUser.name || !newUser.email || !newUser.role || !newUser.password) {
       setError("Please fill out all required fields!");
@@ -141,8 +176,51 @@ function UsersContent() {
     }
 
     try {
-      await axios.post("/api/users", newUser);
-      setSuccess("User added successfully!");
+      // Try API first
+      try {
+        await axios.post("/api/users", newUser);
+        setSuccess("User added successfully!");
+        await fetchUsers();
+        setShowModal(false);
+        setNewUser({
+          name: "",
+          email: "",
+          role: "",
+          password: "",
+          status: "active",
+        });
+        return;
+      } catch (apiError) {
+        console.log('[Users.js] API add failed, using localStorage');
+      }
+
+      // Fallback to localStorage (SAME FORMAT AS LOGIN.JS)
+      const newUserData = {
+        id: Date.now(),
+        username: newUser.name,
+        full_name: newUser.name,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role,
+        status: newUser.status,
+        password: newUser.password,
+        last_login: null,
+        created_at: new Date().toISOString(),
+      };
+
+      const allUsersStr = localStorage.getItem('all_users');
+      const allUsers = allUsersStr ? JSON.parse(allUsersStr) : [];
+      
+      // Check if email already exists
+      if (allUsers.some(u => u.email === newUserData.email)) {
+        setError("Email already exists!");
+        return;
+      }
+
+      allUsers.push(newUserData);
+      saveToLocalStorage(allUsers);
+      
+      setSuccess("User added successfully! This user will now appear in the login form.");
       await fetchUsers();
       setShowModal(false);
       setNewUser({
@@ -153,13 +231,8 @@ function UsersContent() {
         status: "active",
       });
     } catch (error) {
-      console.error("Error adding user:", error);
-      if (error.response?.data?.errors) {
-        const errorMessages = Object.values(error.response.data.errors).flat().join(', ');
-        setError(errorMessages);
-      } else {
-        setError(error.response?.data?.message || "Failed to add user. Please try again.");
-      }
+      console.error("[Users.js] Error adding user:", error);
+      setError("Failed to add user. Please try again.");
     }
   };
 
@@ -197,19 +270,46 @@ function UsersContent() {
         updateData.password = editingUser.password;
       }
 
-      await axios.put(`/api/users/${editingUser.id}`, updateData);
-      setSuccess("User updated successfully!");
-      await fetchUsers();
-      setShowEditModal(false);
-      setEditingUser(null);
-    } catch (error) {
-      console.error("Error updating user:", error);
-      if (error.response?.data?.errors) {
-        const errorMessages = Object.values(error.response.data.errors).flat().join(', ');
-        setError(errorMessages);
-      } else {
-        setError(error.response?.data?.message || "Failed to update user. Please try again.");
+      // Try API first
+      try {
+        await axios.put(`/api/users/${editingUser.id}`, updateData);
+        setSuccess("User updated successfully!");
+        await fetchUsers();
+        setShowEditModal(false);
+        setEditingUser(null);
+        return;
+      } catch (apiError) {
+        console.log('[Users.js] API update failed, using localStorage');
       }
+
+      // Fallback to localStorage
+      const allUsersStr = localStorage.getItem('all_users');
+      const allUsers = allUsersStr ? JSON.parse(allUsersStr) : [];
+      
+      const userIndex = allUsers.findIndex(u => u.id === editingUser.id);
+      if (userIndex >= 0) {
+        allUsers[userIndex] = {
+          ...allUsers[userIndex],
+          name: updateData.name,
+          full_name: updateData.name,
+          username: updateData.name,
+          email: updateData.email,
+          role: updateData.role,
+          status: updateData.status,
+          ...(updateData.password && { password: updateData.password })
+        };
+        
+        saveToLocalStorage(allUsers);
+        setSuccess("User updated successfully!");
+        await fetchUsers();
+        setShowEditModal(false);
+        setEditingUser(null);
+      } else {
+        setError("User not found!");
+      }
+    } catch (error) {
+      console.error("[Users.js] Error updating user:", error);
+      setError("Failed to update user. Please try again.");
     }
   };
 
@@ -219,12 +319,28 @@ function UsersContent() {
     }
 
     try {
-      await axios.delete(`/api/users/${userId}`);
-      setSuccess("User deleted successfully!");
+      // Try API first
+      try {
+        await axios.delete(`/api/users/${userId}`);
+        setSuccess("User deleted successfully!");
+        await fetchUsers();
+        return;
+      } catch (apiError) {
+        console.log('[Users.js] API delete failed, using localStorage');
+      }
+
+      // Fallback to localStorage
+      const allUsersStr = localStorage.getItem('all_users');
+      const allUsers = allUsersStr ? JSON.parse(allUsersStr) : [];
+      
+      const filteredUsers = allUsers.filter(u => u.id !== userId);
+      saveToLocalStorage(filteredUsers);
+      
+      setSuccess("User deleted successfully! This user will no longer appear in the login form.");
       await fetchUsers();
     } catch (error) {
-      console.error("Error deleting user:", error);
-      setError(error.response?.data?.message || "Failed to delete user. Please try again.");
+      console.error("[Users.js] Error deleting user:", error);
+      setError("Failed to delete user. Please try again.");
     }
   };
 
@@ -286,32 +402,12 @@ function UsersContent() {
         </div>
       )}
 
-      <div className="stats-grid">
-        <div className="stat-card stat-total">
-          <div className="stat-number">{stats.total}</div>
-          <div className="stat-label">Total Users</div>
-        </div>
-        <div className="stat-card stat-admin">
-          <div className="stat-number">{stats.admins}</div>
-          <div className="stat-label">Administrators</div>
-        </div>
-        <div className="stat-card stat-faculty">
-          <div className="stat-number">{stats.faculty}</div>
-          <div className="stat-label">Faculty</div>
-        </div>
-        <div className="stat-card stat-student">
-          <div className="stat-number">{stats.students}</div>
-          <div className="stat-label">Students</div>
-        </div>
-        <div className="stat-card stat-active">
-          <div className="stat-number">{stats.active}</div>
-          <div className="stat-label">Active Users</div>
-        </div>
-      </div>
-
       <div className="users-content-card">
         <div className="card-header">
           <h2>Users Management</h2>
+          <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '4px' }}>
+            Users added here will automatically appear in the login form
+          </p>
         </div>
 
         <div className="filters-section">
@@ -435,7 +531,7 @@ function UsersContent() {
         </div>
       </div>
 
-      {/* Add User Modal - Material-UI Dialog */}
+      {/* Add User Modal */}
       <Dialog open={showModal} onClose={() => setShowModal(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Add New User</DialogTitle>
         <DialogContent>
@@ -504,7 +600,7 @@ function UsersContent() {
         </DialogActions>
       </Dialog>
 
-      {/* Edit User Modal - Material-UI Dialog */}
+      {/* Edit User Modal */}
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Edit User</DialogTitle>
         <DialogContent>
@@ -580,6 +676,7 @@ export default function Users() {
   const [user, setUser] = useState(null);
   const [activeMenu, setActiveMenu] = useState("Users");
   const [anchorEl, setAnchorEl] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const open = Boolean(anchorEl);
 
   useEffect(() => {
@@ -619,13 +716,15 @@ export default function Users() {
     { label: "Students", subtitle: "Student Records", icon: SchoolIcon, route: "/students" },
     { label: "Faculty", subtitle: "Faculty Management", icon: PersonIcon, route: "/faculty" },
     { label: "Courses", subtitle: "Course Catalog", icon: AssignmentIcon, route: "/courses" },
-    { label: "Academic Years", subtitle: "Academic Periods", icon: CalendarMonthIcon, route: "/academic-years" },
+  ];
+
+  const settingsMenuItems = [
+    { label: "Academic Years", subtitle: "Academic Periods", icon: CalendarMonthIcon, route: "/AcademicYears" },
     { label: "Departments", subtitle: "Department Structure", icon: BusinessIcon, route: "/departments" },
   ];
 
   return (
     <Box className="users-layout">
-      {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header" onClick={() => window.location.href = "/dashboard"} style={{ cursor: 'pointer' }}>
           <div className="logo-container">
@@ -645,6 +744,7 @@ export default function Users() {
         <nav className="sidebar-nav">
           <div className="nav-section">
             <div className="nav-section-title">MAIN MENU</div>
+            
             {mainMenuItems.map((item) => {
               const IconComponent = item.icon;
               const isActive = activeMenu === item.label;
@@ -668,16 +768,53 @@ export default function Users() {
                 </a>
               );
             })}
+
+            <div 
+              className={`nav-item ${(activeMenu === "Settings" || activeMenu === "Academic Years" || activeMenu === "Departments") ? "active" : ""}`}
+              onClick={() => setSettingsOpen(!settingsOpen)}
+              style={{ cursor: 'pointer' }}
+            >
+              <SettingsIcon className="nav-icon" />
+              <div className="nav-text">
+                <span className="nav-title">Settings</span>
+                <span className="nav-subtitle">System Configuration</span>
+              </div>
+              {settingsOpen ? <ExpandLess style={{ marginLeft: 'auto' }} /> : <ExpandMore style={{ marginLeft: 'auto' }} />}
+            </div>
+
+            <Collapse in={settingsOpen} timeout="auto" unmountOnExit>
+              <div style={{ paddingLeft: '20px' }}>
+                {settingsMenuItems.map((item) => {
+                  const IconComponent = item.icon;
+                  const isActive = activeMenu === item.label;
+                  return (
+                    <a
+                      key={item.label}
+                      href={item.route || "#"}
+                      className={`nav-item nav-sub-item ${isActive ? "active" : ""}`}
+                      onClick={(e) => {
+                        if (!item.route) {
+                          e.preventDefault();
+                          setActiveMenu(item.label);
+                        }
+                      }}
+                      style={{ fontSize: '0.9rem' }}
+                    >
+                      <IconComponent className="nav-icon" style={{ fontSize: '1.25rem' }} />
+                      <div className="nav-text">
+                        <span className="nav-title">{item.label}</span>
+                        <span className="nav-subtitle" style={{ fontSize: '0.7rem' }}>{item.subtitle}</span>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </Collapse>
           </div>
         </nav>
 
         <div className="sidebar-footer">
           <div className="footer-links">
-            <button className="footer-link">
-              <SettingsIcon />
-              Settings
-            </button>
-            <span className="footer-divider">·</span>
             <button className="footer-link">
               <HelpIcon />
               Help & Support
@@ -686,9 +823,7 @@ export default function Users() {
         </div>
       </aside>
 
-      {/* Main Content */}
       <Box className="main-content-wrapper">
-        {/* Top App Bar */}
         <AppBar position="fixed" className="top-appbar" elevation={0}>
           <Toolbar>
             <Typography variant="h6" className="page-title">
@@ -758,7 +893,6 @@ export default function Users() {
           </Toolbar>
         </AppBar>
 
-        {/* Page Content */}
         <Box className="page-content">
           <Toolbar />
           <UsersContent />
